@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Module for adding custom Infinity base functions.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\thunder_taxonomy\ThunderTermAccessControlHandler;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function thunder_taxonomy_entity_type_alter(array &$entity_types): void {
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
+  if (!empty($entity_types['taxonomy_term'])) {
+    $entity_types['taxonomy_term']->setAccessClass(ThunderTermAccessControlHandler::class);
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for \Drupal\taxonomy\TermForm.
+ */
+function thunder_taxonomy_form_taxonomy_term_form_alter(array &$form, FormStateInterface $form_state): void {
+  $activeTheme = Drupal::theme()->getActiveTheme();
+  $activeThemes = array_keys($activeTheme->getBaseThemeExtensions());
+  $activeThemes[] = $activeTheme->getName();
+
+  if (!empty(array_intersect($activeThemes, ['gin']))) {
+    // Move relations into sidebar.
+    $form['relations']['#group'] = 'advanced';
+
+    /** @var \Drupal\Core\Entity\ContentEntityFormInterface $form_object */
+    $form_object = $form_state->getFormObject();
+    /** @var \Drupal\taxonomy\TermInterface $term */
+    $term = $form_object->getEntity();
+
+    // Move pathauto into sidebar. We have to copy this code from the PathWidget
+    // because, at the time the PathWidget is processed the advanced group is
+    // still not present. The group will be created later in a form alter.
+    $form['path_settings'] = [
+      '#type' => 'details',
+      '#title' => t('URL path settings'),
+      '#open' => !empty($form['path']['widget'][0]['alias']['#value']),
+      '#group' => 'advanced',
+      '#access' => !empty($form['path']['#access']) && $term->hasField('path') && $term->get('path')->access('edit'),
+      '#attributes' => [
+        'class' => ['path-form'],
+      ],
+      '#attached' => [
+        'library' => ['path/drupal.path'],
+      ],
+      '#weight' => 30,
+    ];
+    $form['path']['#group'] = 'path_settings';
+  }
+}
+
+/**
+ * Implements hook_form_taxonomy_overview_terms_alter().
+ */
+function thunder_taxonomy_form_taxonomy_overview_terms_alter(array &$form, FormStateInterface $formState): void {
+  if (!isset($form['terms']['#header'])) {
+    return;
+  }
+  $form['terms']['#header'] = array_merge(array_slice($form['terms']['#header'], 0, 1, TRUE),
+    [t('Status')],
+    array_slice($form['terms']['#header'], 1, NULL, TRUE));
+
+  foreach ((array) $form['terms'] as &$term) {
+    if (is_array($term) && !empty($term['#term'])) {
+      $status['status'] = [
+        '#markup' => ($term['#term']->status->value) ? t('Published') : t('Unpublished'),
+        '#type' => 'item',
+      ];
+
+      $term = array_slice($term, 0, 1, TRUE) +
+        $status +
+        array_slice($term, 1, NULL, TRUE);
+    }
+  }
+}

@@ -1,0 +1,16 @@
+name: 'Thunder Workflow'
+description: 'Get an advanced content creation workflow with scheduling functionality.'
+type: module
+core_version_requirement: ^11
+package: Thunder Optional
+dependencies:
+  - drupal:content_moderation
+  - scheduler:scheduler
+  - scheduler_content_moderation_integration:scheduler_content_moderation_integration
+  - config_update:config_update
+
+
+# Information added by Drupal.org packaging script on 2025-08-06
+version: '8.2.2+0-dev'
+project: 'thunder'
+datestamp: 1754464297

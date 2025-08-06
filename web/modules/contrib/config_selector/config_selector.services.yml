@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autoconfigure: true
+    autowire: true
+  config_selector:
+    class: Drupal\config_selector\ConfigSelector
+  logger.channel.config_selector:
+    parent: logger.channel_base
+    arguments: ['config_selector']
+  config_selector.active:
+    class: Drupal\config_selector\ActiveEntity

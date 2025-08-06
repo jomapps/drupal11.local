@@ -1,0 +1,21 @@
+{
+  "name": "drupal/metatag_async_widget",
+  "description": "Provides an asynchronous widget for metatag fields",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Alex Pott (alexpott)",
+      "homepage": "https://www.drupal.org/u/alexpott",
+      "role": "Maintainer"
+    }
+  ],
+  "homepage": "https://drupal.org/project/metatag_async_widget",
+  "support": {
+    "issues": "https://drupal.org/project/issues/metatag_async_widget",
+    "source": "https://git.drupalcode.org/project/metatag_async_widget"
+  },
+  "require": {
+    "drupal/metatag": "^1.0 || ^2.0"
+  }
+}

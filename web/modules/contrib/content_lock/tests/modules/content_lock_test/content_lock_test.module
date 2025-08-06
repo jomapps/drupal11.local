@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Content lock test: Main functions of the module.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Hook\Attribute\LegacyHook;
+use Drupal\content_lock_test\Hook\Hooks;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+#[LegacyHook]
+function content_lock_test_entity_type_alter(&$entity_types): void {
+  (new Hooks())->entityTypeAlter($entity_types);
+}

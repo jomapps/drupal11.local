@@ -1,0 +1,14 @@
+type Menu {
+  id: String!
+  name: String!
+  items: [MenuItem]
+}
+
+type MenuItem {
+  title: String!
+  description: String
+  url: String!
+  expanded: Boolean!
+  inActiveTrail: Boolean!
+  children: [MenuItem]
+}

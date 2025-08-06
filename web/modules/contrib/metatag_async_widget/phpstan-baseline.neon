@@ -1,0 +1,43 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Plugin/Field/FieldWidget/AsyncMetatagFirehose.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:assertWaitOnAjaxRequest\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:waitForButton\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:waitForElement\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:waitForField\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:waitForLink\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php
+
+		-
+			message: '#^Call to an undefined method Drupal\\Tests\\WebAssert\:\:waitForText\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/src/FunctionalJavascript/MetatagAsyncWidgetTest.php

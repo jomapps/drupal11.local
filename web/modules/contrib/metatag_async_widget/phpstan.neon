@@ -1,0 +1,14 @@
+# Configuration file for PHPStan static code checking, see https://phpstan.org .
+includes:
+  - phpstan-baseline.neon
+  - phar://phpstan.phar/conf/bleedingEdge.neon
+
+parameters:
+
+  level: 6
+
+  ignoreErrors:
+    # Array shape can come later
+    - '# type has no value type specified in iterable type array\.$#'
+    - '# has parameter \$.* with no value type specified in iterable type#'
+    - identifier: missingType.generics

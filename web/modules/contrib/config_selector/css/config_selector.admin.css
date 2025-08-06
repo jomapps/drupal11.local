@@ -1,0 +1,8 @@
+.config-selector--feature-form--table td.entity-type {
+  font-weight: bold;
+  font-variant: all-small-caps;
+}
+
+.config-selector--feature-form--table td.entity-label {
+  padding-inline-start: 2em;
+}

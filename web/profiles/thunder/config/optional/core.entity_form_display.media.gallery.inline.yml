@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.media.inline
+    - field.field.media.gallery.field_media_images
+    - media.type.gallery
+  module:
+    - entity_reference_actions
+    - media_library_media_modify
+id: media.gallery.inline
+targetEntityType: media
+bundle: gallery
+mode: inline
+content:
+  field_media_images:
+    type: media_library_media_modify_widget
+    weight: 1
+    region: content
+    settings:
+      media_types: {  }
+      add_button_text: 'Select images'
+      form_mode: override
+      check_selected: true
+      replace_checkbox_by_order_indicator: true
+      no_edit_on_create: true
+      multi_edit_on_create: false
+    third_party_settings:
+      entity_reference_actions:
+        enabled: true
+        options:
+          action_title: Action
+          include_exclude: include
+          selected_actions:
+            media_edit_action: media_edit_action
+            media_delete_action: '0'
+            media_publish_action: '0'
+            media_save_action: '0'
+            media_unpublish_action: '0'
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  moderation_state: true
+  path: true
+  publish_on: true
+  publish_state: true
+  scheduler_settings: true
+  status: true
+  uid: true
+  unpublish_on: true
+  unpublish_state: true

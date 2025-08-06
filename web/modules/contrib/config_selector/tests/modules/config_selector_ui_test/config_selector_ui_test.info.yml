@@ -1,0 +1,12 @@
+name: 'Configuration Selector UI Test'
+type: module
+package: Testing
+dependencies:
+  - drupal:node
+  - drupal:views
+  - config_selector:config_selector
+
+# Information added by Drupal.org packaging script on 2024-12-11
+version: '3.0.0'
+project: 'config_selector'
+datestamp: 1733908159

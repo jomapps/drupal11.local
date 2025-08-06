@@ -1,0 +1,12 @@
+name: 'Content lock test'
+type: module
+description: 'Provides test classes.'
+package: Testing
+dependencies:
+  - content_lock:content_lock
+  - entity_test:entity_test
+
+# Information added by Drupal.org packaging script on 2025-07-08
+version: '3.0.0-alpha4'
+project: 'content_lock'
+datestamp: 1751989970

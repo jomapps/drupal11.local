@@ -1,0 +1,141 @@
+{
+    "name": "thunder/thunder-distribution",
+    "description": "The thunder distribution",
+    "type": "drupal-profile",
+    "authors": [
+        {
+            "name": "Daniel Bosen",
+            "email": "daniel.bosen@burda.com"
+        },
+        {
+            "name": "Christian Fritsch",
+            "email": "christian.fritsch@burda.com"
+        },
+        {
+            "name": "Volker Killesreiter",
+            "email": "volker.killesreiter@burda.com"
+        },
+        {
+            "name": "Alex Pott",
+            "email": "alex.a.pott@gmail.com"
+        }
+    ],
+    "license": "GPL-2.0-or-later",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "extra": {
+        "installer-name": "thunder",
+        "patches": {
+            "drupal/core": {
+                "Fix Claro styles for exposed views filters wrapped in fieldsets": "https://www.drupal.org/files/issues/2021-05-31/3133639.19.patch",
+                "Let users configure the text of the \"Add media\" button": "https://www.drupal.org/files/issues/2021-10-01/3169956-34.patch"
+            },
+            "drupal/diff": {
+                "Back button for comparison page": "https://www.drupal.org/files/issues/back_button_for-2853193-4.patch"
+            },
+            "drupal/facets": {
+                "Issue #3523188: The configuration property processor_id doesn't exist":"https://www.drupal.org/files/issues/2025-07-04/3523188-8.patch"
+            },
+            "drupal/graphql": {
+                "Fix missing server_id. Extracted from #3477239: GraphQL query stops working - seems cache issue.": "https://www.drupal.org/files/issues/2025-05-26/3477239-missing-server_id.patch"
+            },
+            "drupal/pathauto": {
+                "Fixes #3489108: Fix PHP 8.4 implicit nullable deprecation.": "https://www.drupal.org/files/issues/2025-03-06/pathauto-3489108.diff"
+            },
+            "drupal/gin": {
+                "Issue #3535333: Cancel link in top bar adds padding and hides page title": "https://www.drupal.org/files/issues/2025-07-21/3535333.diff"
+            }
+        }
+    },
+    "require": {
+        "php": ">=8.3",
+        "cweagans/composer-patches": "^1.6.5",
+        "drupal/access_unpublished": "^1.5",
+        "drupal/admin_toolbar": "^3.6",
+        "drupal/advancedqueue": "^1.2",
+        "drupal/autofill": "^1.1",
+        "drupal/autosave_form": "^1.8",
+        "drupal/better_exposed_filters": "^7.0.5",
+        "drupal/checklistapi": "^2.1.3",
+        "drupal/core-recommended": "~11.2.0",
+        "drupal/config_selector": "^3.0",
+        "drupal/config_update": "^2.0-alpha4",
+        "drupal/content_lock": "^3.0.0-alpha4",
+        "drupal/crop": "^2.2",
+        "drupal/diff": "1.9",
+        "drupal/dropzonejs": "^2.8",
+        "drupal/empty_fields": "^1.0",
+        "drupal/entity_reference_actions": "^1.1.1",
+        "drupal/entity_reference_revisions": "^1.3",
+        "drupal/field_group": "^4.0",
+        "drupal/focal_point": "^2.1.2",
+        "drupal/facets": "^3.0.0",
+        "drupal/gin": "^5.0.2",
+        "drupal/graphql": "^5.0.0-alpha2@alpha",
+        "drupal/inline_entity_form": "^3.0.0-rc20",
+        "drupal/ivw_integration": "^2.0",
+        "drupal/length_indicator": "^1.2",
+        "drupal/linkit": "^7.0.6",
+        "drupal/media_entity_instagram": "^4.0@beta",
+        "drupal/media_entity_pinterest": "^3.0",
+        "drupal/media_entity_slideshow": "^2.6",
+        "drupal/media_entity_twitter": "^2.5",
+        "drupal/media_expire": "^2.6",
+        "drupal/media_library_media_modify": "^2.0.0-beta1",
+        "drupal/media_file_delete": "^1.2",
+        "drupal/metatag": "^2.0.2",
+        "drupal/metatag_async_widget": "^1.2",
+        "drupal/paragraphs": "^1.19",
+        "drupal/paragraphs_features": "^2.2",
+        "drupal/password_policy": "^4.0.3",
+        "drupal/pathauto": "^1.13",
+        "drupal/responsive_preview": "^2.1",
+        "drupal/redirect": "^1.7",
+        "drupal/scheduler": "^2.1.0",
+        "drupal/scheduler_content_moderation_integration": "^3.0.4",
+        "drupal/schema_metatag": "^3.0.3",
+        "drupal/search_api_mark_outdated": "^1.0",
+        "drupal/simple_sitemap": "^4.2.1",
+        "drupal/tagify": "^1.2",
+        "drupal/token": "^1.7",
+        "drupal/update_helper": "^4.1",
+        "drupal/search_api": "^1.38",
+        "drupal/views_bulk_edit": "^3.0",
+        "drupal/views_bulk_operations": "^4.2.7",
+        "drupal/vgwort": "^3.0",
+        "drupal/xymatic": "^1.0@beta",
+        "npm-asset/dropzone": "^5.5.1",
+        "npm-asset/exif-js": "^2.3.0",
+        "npm-asset/yaireo--tagify": "^4.32.2",
+        "caxy/php-htmldiff": "^0.1.14"
+    },
+    "suggest": {
+        "drupal/search_api_solr": "Provides a Apache Solr backend for the Search API module"
+    },
+    "replace": {
+        "bower-asset/jquery": "*",
+        "bower-asset/jqueryui": "*",
+        "bower-asset/backbone": "*",
+        "bower-asset/underscore": "*",
+        "npm-asset/jquery": "*",
+        "npm-asset/jqueryui": "*",
+        "npm-asset/backbone": "*",
+        "npm-asset/underscore": "*",
+        "thunder/thunder_gqls": "*"
+    },
+    "require-dev": {
+        "burdamagazinorg/thunder-dev-tools": "dev-master",
+        "thunder/thunder_testing_demo": "4.x-dev",
+        "mglaman/phpstan-drupal": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpunit/phpunit": "^11.5"
+    }
+}

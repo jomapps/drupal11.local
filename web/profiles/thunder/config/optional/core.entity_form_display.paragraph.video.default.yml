@@ -1,0 +1,43 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.video.field_video
+    - paragraphs.paragraphs_type.video
+  module:
+    - entity_reference_actions
+    - media_library_media_modify
+id: paragraph.video.default
+targetEntityType: paragraph
+bundle: video
+mode: default
+content:
+  field_video:
+    type: media_library_media_modify_widget
+    weight: 0
+    region: content
+    settings:
+      media_types: {  }
+      add_button_text: 'Select video'
+      form_mode: override
+      check_selected: false
+      replace_checkbox_by_order_indicator: false
+      no_edit_on_create: false
+      multi_edit_on_create: false
+    third_party_settings:
+      entity_reference_actions:
+        enabled: false
+        options:
+          action_title: Action
+          include_exclude: exclude
+          selected_actions:
+            media_delete_action: '0'
+            media_edit_action: '0'
+            media_publish_action: '0'
+            media_save_action: '0'
+            media_unpublish_action: '0'
+hidden:
+  created: true
+  moderation_state: true
+  status: true
+  uid: true

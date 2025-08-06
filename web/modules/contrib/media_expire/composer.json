@@ -1,0 +1,9 @@
+{
+    "name": "drupal/media_expire",
+    "description": "Expires media assets.",
+    "type": "drupal-module",
+    "require-dev": {
+        "drupal/graphql": "^4.0"
+    },
+    "require": {}
+}
