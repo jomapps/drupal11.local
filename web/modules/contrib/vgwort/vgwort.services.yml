@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    autoconfigure: true
+    autowire: true
+  Drupal\vgwort\ParticipantListManager: '@vgwort.participant_list_manager'
+  vgwort.participant_list_manager:
+    class: Drupal\vgwort\ParticipantListManager
+    parent: default_plugin_manager
+  vgwort.config_subscriber:
+    class: Drupal\vgwort\ConfigSubscriber
+  vgwort.routing:
+    class: Drupal\vgwort\Routing\VGWortRouteSubscriber
+  Drupal\vgwort\MessageGenerator: '@vgwort.message_generator'
+  vgwort.message_generator:
+    class: Drupal\vgwort\MessageGenerator
+  Drupal\vgwort\EntityQueuer: '@vgwort.entity_queuer'
+  vgwort.entity_queuer:
+    class: Drupal\vgwort\EntityQueuer
+  Drupal\vgwort\EntityJobMapper: '@vgwort.entity_job_mapper'
+  vgwort.entity_job_mapper:
+    class: Drupal\vgwort\EntityJobMapper
+  Drupal\vgwort\EntityInfo: '@vgwort.entity_info'
+  vgwort.entity_info:
+    class: Drupal\vgwort\EntityInfo
+  vgwort.overview_access:
+    class: Drupal\vgwort\Access\OverviewAccess
+    tags:
+      - { name: access_check, applies_to: _access_vgwort_overview }

@@ -1,0 +1,91 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to method error\\(\\) on an unknown class Drush\\\\Style\\\\DrushStyle\\.$#"
+			count: 1
+			path: src/Commands/VgwortCommands.php
+
+		-
+			message: "#^Call to method success\\(\\) on an unknown class Drush\\\\Style\\\\DrushStyle\\.$#"
+			count: 1
+			path: src/Commands/VgwortCommands.php
+
+		-
+			message: "#^Match expression does not handle remaining value\\: true$#"
+			count: 1
+			path: src/Controller/Overview.php
+
+		-
+			message: "#^\\\\Drupal calls should be avoided in classes, use dependency injection instead$#"
+			count: 1
+			path: src/EntityQueuer.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Core\\\\Entity\\\\EntityInterface\\:\\:get\\(\\)\\.$#"
+			count: 2
+			path: src/Plugin/vgwort/ParticipantList/EntityReferenceField.php
+
+		-
+			message: "#^Call to an undefined method Behat\\\\Mink\\\\Element\\\\ElementInterface\\:\\:isVisible\\(\\)\\.$#"
+			count: 2
+			path: tests/src/FunctionalJavascript/VGWortFieldTest.php
+
+		-
+			message: "#^Call to an undefined method Behat\\\\Mink\\\\Element\\\\ElementInterface\\:\\:setValue\\(\\)\\.$#"
+			count: 1
+			path: tests/src/FunctionalJavascript/VGWortFieldTest.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Tests\\\\WebAssert\\:\\:waitForElementVisible\\(\\)\\.$#"
+			count: 4
+			path: tests/src/FunctionalJavascript/VGWortFieldTest.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Tests\\\\WebAssert\\:\\:waitForText\\(\\)\\.$#"
+			count: 1
+			path: tests/src/FunctionalJavascript/VGWortFieldTest.php
+
+		-
+			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'Drupal\\\\\\\\advancedqueue\\\\\\\\Job' and null will always evaluate to false\\.$#"
+			count: 1
+			path: tests/src/Kernel/EntityQueueTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) contains unresolvable type\\.$#"
+			count: 4
+			path: tests/src/Kernel/EntityQueueTest.php
+
+		-
+			message: "#^Property Drupal\\\\user\\\\Entity\\\\User\\:\\:\\$vgwort_test \\(Drupal\\\\Core\\\\Field\\\\FieldItemListInterface\\) does not accept array\\<string, string\\>\\.$#"
+			count: 1
+			path: tests/src/Kernel/EntityQueueTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$entity of method Drupal\\\\vgwort\\\\MessageGenerator\\:\\:entityToNewMessage\\(\\) expects Drupal\\\\Core\\\\Entity\\\\FieldableEntityInterface, Drupal\\\\Core\\\\Entity\\\\EntityInterface given\\.$#"
+			count: 9
+			path: tests/src/Kernel/MessageGeneratorTest.php
+
+		-
+			message: "#^Property Drupal\\\\user\\\\Entity\\\\User\\:\\:\\$vgwort_test \\(Drupal\\\\Core\\\\Field\\\\FieldItemListInterface\\) does not accept array\\<string, string\\>\\.$#"
+			count: 4
+			path: tests/src/Kernel/ParticipantPluginTest.php
+
+		-
+			message: "#^Property Drupal\\\\entity_test\\\\Entity\\\\EntityTestRevPub\\:\\:\\$vgwort_counter_suffix \\(Drupal\\\\Core\\\\Field\\\\FieldItemListInterface\\) does not accept int\\.$#"
+			count: 2
+			path: tests/src/Kernel/VgWortKernelTest.php
+
+		-
+			message: "#^Parameter \\#3 \\$participants of class Drupal\\\\vgwort\\\\Api\\\\NewMessage constructor expects array\\<Drupal\\\\vgwort\\\\Api\\\\Participant\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/src/Unit/NewMessageTest.php
+
+		-
+			message: "#^Parameter \\#4 \\$webranges of class Drupal\\\\vgwort\\\\Api\\\\NewMessage constructor expects array\\<Drupal\\\\vgwort\\\\Api\\\\Webrange\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/src/Unit/NewMessageTest.php
+
+		-
+			message: "#^Parameter \\#5 \\$identificationCodes of class Drupal\\\\vgwort\\\\Api\\\\PersonParticipant constructor expects array\\<Drupal\\\\vgwort\\\\Api\\\\IdentificationCode\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/src/Unit/PersonParticipantTest.php

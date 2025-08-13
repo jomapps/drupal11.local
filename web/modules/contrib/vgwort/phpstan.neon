@@ -1,0 +1,21 @@
+# Configuration file for PHPStan static code checking, see https://phpstan.org .
+includes:
+  - phpstan-baseline.neon
+  - phar://phpstan.phar/conf/bleedingEdge.neon
+
+parameters:
+
+  level: 6
+
+  treatPhpDocTypesAsCertain: false
+
+  ignoreErrors:
+    # new static() is a best practice in Drupal, so we cannot fix that.
+    - "#^Unsafe usage of new static#"
+    # Array shape can come later
+    - '# type has no value type specified in iterable type array\.$#'
+    - '# has parameter \$.* with no value type specified in iterable type#'
+    # Entity magic
+    - '#^Access to an undefined property .*Drupal\\Core\\(Field\\FieldItemInterface|Field\\FieldItemListInterface|Entity\\EntityInterface|Entity\\ContentEntityInterface|Entity\\FieldableEntityInterface|Entity\\RevisionableInterface)::\$.*\.$#'
+    - identifier: missingType.generics
+    - '#^Cannot access property \$(vgwort_counter_id|field_vg_test) on Drupal\\node\\NodeInterface\|false\.$#'

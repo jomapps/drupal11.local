@@ -1,0 +1,3 @@
+view vgwort info:
+  title: 'View VG Wort information tab on entities'
+  description: 'Requires access to edit the entity as well.'

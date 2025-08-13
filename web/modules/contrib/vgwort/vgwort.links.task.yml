@@ -1,0 +1,3 @@
+vgwort.local_tasks:
+  deriver: 'Drupal\vgwort\Plugin\Derivative\VGWortLocalTasks'
+  weight: 200

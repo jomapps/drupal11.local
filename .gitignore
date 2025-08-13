@@ -1,44 +1,98 @@
-# Drupal 11 .gitignore
+# Drupal 11 Production-Ready .gitignore
+# Optimized for automated deployment workflows
 
-# Ignore core when managing all of a project's dependencies with Composer
-# including Drupal core.
+# =============================================================================
+# CORE DRUPAL FILES (Managed by Composer)
+# =============================================================================
+# Ignore Drupal core - managed by Composer
 web/core/
 
-# Ignore dependencies that are managed with Composer.
-# Generally you should only ignore the root vendor directory. It's important
-# that core/assets/vendor and any other vendor directories within contrib or
-# custom module, theme, etc., are not ignored unless you purposely do so.
+# Ignore Composer dependencies
 /vendor/
 
-# Ignore configuration files that may contain sensitive information.
-web/sites/*/settings*.php
-web/sites/*/services*.yml
+# Keep composer.lock for consistent deployments
+# composer.lock should be committed for production deployments
 
-# Ignore paths that contain user-generated content.
+# =============================================================================
+# CONFIGURATION & SENSITIVE FILES
+# =============================================================================
+# Ignore all settings files except the template
+web/sites/*/settings*.php
+!web/sites/*/default.settings.php
+
+# Ignore services configuration files
+web/sites/*/services*.yml
+!web/sites/*/default.services.yml
+
+# Ignore environment-specific configuration
+.env
+.env.local
+.env.*.local
+
+# =============================================================================
+# USER-GENERATED CONTENT & CACHE
+# =============================================================================
+# Ignore user-uploaded files
 web/sites/*/files/
 web/sites/*/private/
 
-# Ignore multi-site test environment.
-web/sites/simpletest/
+# Ignore Drupal cache directories
+web/sites/*/files/php/
+web/sites/*/files/css/
+web/sites/*/files/js/
+web/sites/*/files/styles/
+web/sites/*/files/config_*/
 
-# Ignore SimpleTest multi-site environment.
-web/sites/simpletest
+# Ignore Twig cache
+web/sites/*/files/php/twig/
 
-# Ignore files for PEAR package manager, you can ignore these if PEAR is not used
-.buildpath
-.project
-.settings
-*.sublime-project
-*.sublime-workspace
+# Ignore translation files (regenerated)
+web/sites/*/files/translations/
 
-# Ignore IDE files
+# =============================================================================
+# DEVELOPMENT & BUILD TOOLS
+# =============================================================================
+# Node.js dependencies and build artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.sass-cache/
+*.css.map
+
+# Build directories
+build/
+dist/
+web/themes/custom/*/dist/
+web/themes/custom/*/build/
+
+# Gulp/Grunt
+.gulp/
+.grunt/
+
+# Bower
+bower_components/
+
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT FILES
+# =============================================================================
+# Local development tools
+docker-compose.override.yml
+.lando.yml
+.ddev/
+.vagrant/
+Vagrantfile.local
+
+# IDE files
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
-*~
+*.iml
 
-# Ignore OS generated files
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -46,268 +100,154 @@ web/sites/simpletest
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# Ignore temporary files
-*.tmp
-*.temp
+# =============================================================================
+# LOGS & TEMPORARY FILES
+# =============================================================================
+# Log files
 *.log
-*.cache
-
-# Ignore backup files
-*.bak
-*.backup
-*~
-
-# Ignore Drupal's file directory
-web/sites/*/files/
-web/sites/*/private/
-
-# Ignore Drupal's default settings file
-web/sites/*/settings.php
-web/sites/*/settings.local.php
-
-# Ignore Drupal's services file
-web/sites/*/services.yml
-
-# Ignore Drupal's hash salt file
-web/sites/*/salt.txt
-
-# Ignore Drupal's sync directory (if using config sync)
-web/sites/*/files/config_*/
-
-# Ignore translation files
-web/sites/*/files/translations/
-
-# Ignore CSS and JS cache
-web/sites/*/files/css/
-web/sites/*/files/js/
-
-# Ignore image styles
-web/sites/*/files/styles/
-
-# Ignore PHP error logs
 error_log
 php_errors.log
 
-# Ignore Drush backups
-*.sql
-*.sql.gz
-backup_migrate/
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*~
 
-# Ignore node_modules (if using Node.js for theme development)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
 
-# Ignore Sass cache
-.sass-cache/
-*.css.map
-
-# Ignore Gulp/Grunt files
-.gulp/
-.grunt/
-
-# Ignore Bower components
-bower_components/
-
-# Ignore compiled assets (adjust paths as needed for your theme)
-web/themes/custom/*/dist/
-web/themes/custom/*/build/
-
-# Ignore environment files
-.env
-.env.local
-.env.*.local
-
-# Ignore Composer lock file (uncomment if you don't want to track it)
-# composer.lock
-
-# Ignore patches directory (if using cweagans/composer-patches)
-patches/
-
-# Ignore local development files
-docker-compose.override.yml
-.lando.yml
-.ddev/
-
-# Ignore PHPUnit cache
-.phpunit.result.cache
-
-# Ignore Behat/testing files
-behat.yml
-tests/behat/local.yml
-
-# Ignore local configuration
-web/sites/development.services.yml
-web/sites/local.settings.php
-
-# Ignore WAMP/XAMPP specific files
-.htaccess.bak
-php.ini
-
-# Ignore database dumps
+# =============================================================================
+# DATABASE & MIGRATION FILES
+# =============================================================================
+# Database dumps (keep these out of version control)
 *.sql
 *.sql.gz
 database/
 db_backups/
+backup_migrate/
 
-# Ignore local Drupal Console configuration
-.console/
+# Local migration and development data
+migrate_local/
+migration_local/
 
-# Ignore Drupal VM
-.vagrant/
-Vagrantfile.local
+# =============================================================================
+# TESTING & QUALITY ASSURANCE
+# =============================================================================
+# PHPUnit
+.phpunit.result.cache
 
-# Ignore platform.sh files (if not using Platform.sh)
-.platform/
-.platform.app.yaml
+# Behat
+behat.yml
+tests/behat/local.yml
 
-# Ignore Acquia files (if not using Acquia)
-hooks/
-factory-hooks/
+# Test results
+test-results/
+coverage/
+.nyc_output/
 
-# Ignore Pantheon files (if not using Pantheon)
-pantheon.yml
-pantheon.upstream.yml
-
-# Ignore local development tools
-.editorconfig.local
-phpcs.xml.local
-phpunit.xml.local
-
-# Ignore Drupal's file permissions script
-web/sites/default/files/.htaccess
-
-# Ignore any local override files
-*.local.*
-local.*
-
-# Ignore Twig cache
-web/sites/*/files/php/twig/
-
-# Ignore aggregated CSS/JS
-web/sites/*/files/css/
-web/sites/*/files/js/
-
-# Ignore config split directories (if using config_split module)
-config/local/
-config/dev/
-config/stage/
-config/prod/
-
-# Ignore local Drush configuration
-drush/local.drush.yml
-drush/drushrc.local.php
-
-# Ignore local scripts
-scripts/local/
-bin/local/
-
-# Ignore any .orig files from merges
-*.orig
-
-# Ignore any patch files
-*.patch
-*.diff
-
-# Ignore any archive files
-*.tar
-*.tar.gz
-*.zip
-*.rar
-
-# Ignore any IDE or editor specific files
-*.sublime-project
-*.sublime-workspace
-.vscode/
-.idea/
-*.iml
-
-# Ignore any OS specific files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Ignore any temporary or cache files
-*.tmp
-*.cache
-*.log
-*~
-
-# Ignore any backup files
-*.bak
-*.backup
-*.old
-
-# Ignore any local configuration overrides
+# =============================================================================
+# LOCAL DEVELOPMENT OVERRIDES
+# =============================================================================
+# Local configuration overrides
+web/sites/development.services.yml
+web/sites/local.settings.php
 local.settings.php
 local.services.yml
 settings.local.php
 services.local.yml
 
-# Ignore Drupal Console dotfiles
-.console/
+# Local development files
+*.local.*
+local.*
 
-# Ignore Drupal Scaffold files (if you want to customize them)
-# web/.csslintrc
-# web/.eslintignore
-# web/.eslintrc.json
-# web/.gitattributes
-# web/.ht.router.php
-# web/.htaccess
-# web/autoload.php
-# web/index.php
-# web/robots.txt
-# web/update.php
-# web/web.config
+# Local scripts and tools
+scripts/local/
+bin/local/
+drush/local.drush.yml
+drush/drushrc.local.php
 
-# Ignore local development certificates
+# Local development modules/themes
+web/modules/local/
+web/themes/local/
+web/libraries/local/
+web/profiles/local/
+
+# =============================================================================
+# DEPLOYMENT & HOSTING PLATFORM FILES
+# =============================================================================
+# Platform.sh (uncomment if not using)
+# .platform/
+# .platform.app.yaml
+
+# Acquia (uncomment if not using)
+# hooks/
+# factory-hooks/
+
+# Pantheon (uncomment if not using)
+# pantheon.yml
+# pantheon.upstream.yml
+
+# =============================================================================
+# SECURITY & CERTIFICATES
+# =============================================================================
+# SSL certificates and keys
 *.pem
 *.crt
 *.key
 
-# Ignore local development databases
-*.sqlite
-*.db
+# Hash salt files
+web/sites/*/salt.txt
 
-# Ignore any local build artifacts
-build/
-dist/
-public/build/
+# =============================================================================
+# PROJECT-SPECIFIC IGNORES
+# =============================================================================
+# Your project-specific directories
+backup/
+drupal-entity/
+drush-scripts-temp/
+exports/
 
-# Ignore any local test results
-test-results/
-coverage/
-.nyc_output/
+# Temporary development files
+$v){
+save()
 
-# Ignore any local documentation builds
-docs/_build/
-docs/build/
+# WAMP/XAMPP specific
+.htaccess.bak
+php.ini
+web/_ini_check.php
+web/ini_check.php
 
-# Ignore any local deployment scripts
-deploy.local.sh
-deploy.local.php
+# Archive files
+*.tar
+*.tar.gz
+*.zip
+*.rar
 
-# Ignore any local migration files
-migrate_local/
-migration_local/
+# Patch files
+*.patch
+*.diff
 
-# Ignore any local feature files
-features_local/
+# =============================================================================
+# DRUPAL CONSOLE & DRUSH
+# =============================================================================
+.console/
 
-# Ignore any local update hooks
-update_local/
+# =============================================================================
+# CONFIGURATION MANAGEMENT
+# =============================================================================
+# Config split directories (adjust based on your setup)
+config/local/
+config/dev/
+config/stage/
+# config/prod/  # You might want to track production config
 
-# Ignore any local custom modules/themes for development
-web/modules/local/
-web/themes/local/
-
-# Ignore any local libraries
-web/libraries/local/
-
-# Ignore any local profiles
-web/profiles/local/
-
-# End of .gitignore
-backup
+# =============================================================================
+# MULTISITE TESTING
+# =============================================================================
+web/sites/simpletest/

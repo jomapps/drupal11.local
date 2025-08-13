@@ -22,6 +22,7 @@
         "composer/installers": "^2.3",
         "cweagans/composer-patches": "*",
         "drupal/access_unpublished": "^1.6",
+        "drupal/address": "^2.0",
         "drupal/admin_toolbar": "*",
         "drupal/autofill": "^1.2",
         "drupal/autosave_form": "^1.10",
@@ -38,6 +39,7 @@
         "drupal/entity_reference_actions": "^1.1",
         "drupal/field_group": "^4.0",
         "drupal/focal_point": "^2.1",
+        "drupal/geofield": "^1.65",
         "drupal/gin": "^5.0",
         "drupal/inline_entity_form": "^3.0@RC",
         "drupal/length_indicator": "^1.4",
@@ -62,6 +64,7 @@
         "drupal/tagify": "^1.2",
         "drupal/token": "*",
         "drupal/update_helper": "^4.1",
+        "drupal/vgwort": "^3.0",
         "drupal/views_bulk_edit": "^3.0",
         "drush/drush": "^13.6"
     },

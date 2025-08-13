@@ -1,0 +1,15 @@
+advancedqueue
+epub
+errorcode
+firstname
+karteinummer
+messagetext
+privateidentificationid
+shorttext
+vgwort
+vgzm
+webrange
+webranges
+ISNI
+GNDID
+ORCID

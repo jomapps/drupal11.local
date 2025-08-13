@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains install and update functions for VG Wort module.
+ */
+
+use Drupal\vgwort\EntityJobMapper;
+
+/**
+ * Implements hook_schema().
+ */
+function vgwort_schema(): array {
+  return [EntityJobMapper::TABLE => EntityJobMapper::schemaDefinition()];
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function vgwort_update_last_removed(): int {
+  return 20006;
+}

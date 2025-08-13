@@ -1,0 +1,14 @@
+name: VG Wort
+description: 'Adds VG Wort integration using publisher defined keys'
+type: module
+package: Content
+core_version_requirement: ^10.3 || ^11
+configure: vgwort.settings
+dependencies:
+  - advancedqueue:advancedqueue
+  - drupal:node
+
+# Information added by Drupal.org packaging script on 2025-03-04
+version: '3.0.0'
+project: 'vgwort'
+datestamp: 1741105011

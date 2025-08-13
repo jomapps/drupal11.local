@@ -1,0 +1,63 @@
+# Drupal 11 Deployment Configuration
+# This file contains deployment settings and can be used by CI/CD tools
+
+deployment:
+  # Environment settings
+  environments:
+    production:
+      url: "https://your-production-domain.com"
+      branch: "main"
+      php_version: "8.1"
+      
+    staging:
+      url: "https://staging.your-domain.com"
+      branch: "develop"
+      php_version: "8.1"
+
+  # Files and directories to sync
+  sync:
+    # Include these in deployment
+    include:
+      - "web/"
+      - "vendor/"
+      - "composer.json"
+      - "composer.lock"
+      - ".htaccess"
+      - "robots.txt"
+      
+    # Exclude these from deployment sync
+    exclude:
+      - "web/sites/*/files/"
+      - "web/sites/*/private/"
+      - "web/sites/*/settings*.php"
+      - "*.log"
+      - "*.tmp"
+
+  # Database operations
+  database:
+    # Run these commands after deployment
+    post_deploy_commands:
+      - "drush cache:rebuild"
+      - "drush updatedb -y"
+      - "drush config:import -y"
+      - "drush cache:rebuild"
+
+  # File permissions (adjust for your server)
+  permissions:
+    web_root: "755"
+    files_directory: "755"
+    settings_file: "644"
+
+# Build process (if using theme compilation)
+build:
+  # Commands to run before deployment
+  pre_deploy:
+    - "composer install --no-dev --optimize-autoloader"
+    # - "npm install && npm run build"  # Uncomment if using Node.js build process
+    
+  # Commands to run after deployment
+  post_deploy:
+    - "drush cache:rebuild"
+    - "drush updatedb -y"
+    - "drush config:import -y"
+    - "drush cache:rebuild"
