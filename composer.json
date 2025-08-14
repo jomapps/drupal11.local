@@ -65,6 +65,7 @@
         "drupal/token": "*",
         "drupal/update_helper": "^4.1",
         "drupal/vgwort": "^3.0",
+        "drupal/video_embed_field": "^3.0@beta",
         "drupal/views_bulk_edit": "^3.0",
         "drush/drush": "^13.6"
     },
