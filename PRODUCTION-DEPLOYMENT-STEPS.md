@@ -26,10 +26,39 @@ cp web/sites/default/settings.php web/sites/default/settings.production.php
 
 ### Step 3: Export Configuration
 ```bash
-# Export current configuration
-drush config:export
+# In Git Bash - Export current configuration
+vendor/bin/drush config:export
 
-# Add config to git if not already tracked
+# Create git-tracked config directory
+mkdir -p config/sync
+
+# Copy exported config to git-tracked directory
+# The export goes to sites/default/files/config_HASH/sync/ which is gitignored
+# Find and copy all .yml files from the export directory
+find sites/default/files -name "config_*" -type d -exec cp -r {}/sync/* config/sync/ \; 2>/dev/null || true
+
+# Verify config files were copied
+ls config/sync/
+
+# Add config to git
+git add config/
+git commit -m "Export configuration for production"
+git push origin master
+```
+
+**Windows PowerShell Alternative:**
+```powershell
+# Create config directory
+New-Item -ItemType Directory -Path "config\sync" -Force
+
+# Copy config files (adjust the hash path as needed)
+$configPath = Get-ChildItem "sites\default\files\config_*" -Directory | Select-Object -First 1
+if ($configPath) {
+    Copy-Item "$($configPath.FullName)\sync\*" "config\sync\" -Recurse -Force
+}
+
+# Verify and commit
+Get-ChildItem "config\sync\"
 git add config/
 git commit -m "Export configuration for production"
 git push origin master
@@ -132,8 +161,9 @@ $settings['entity_update_backup'] = TRUE;
 
 /**
  * Configuration sync directory.
+ * Use the git-tracked config directory for production
  */
-$settings['config_sync_directory'] = 'sites/default/files/config_8Qxp0-q0yAfcpiAdZUSEdka3LBLe4kh06WUngmf-yCB4VtVDTRB7HZZgtaqrNRBOnIVGg5iLcA/sync';
+$settings['config_sync_directory'] = '../config/sync';
 
 /**
  * Trusted host configuration.
@@ -196,10 +226,23 @@ rm /tmp/drupal11_production.sql
 
 ### Step 11: Copy Files from Old Production
 ```bash
-# You'll need to copy files from your old production server
-# This step depends on how you access your old server
-# Example if you have the files locally:
-# scp -r /path/to/old/files/* root@173.249.18.165:/home/admin/domains/drupal11.travelm.de/public_html/web/sites/default/files/
+# Create the files directory structure
+mkdir -p web/sites/default/files
+chown -R admin:admin web/sites/default/files
+chmod -R 755 web/sites/default/files
+
+# Copy files from old production server
+# Replace OLD_SERVER_IP with your old server's IP
+# scp -r root@OLD_SERVER_IP:/path/to/old/files/* /home/admin/domains/drupal11.travelm.de/public_html/web/sites/default/files/
+
+# Or if you have files locally, upload them:
+# From your local machine:
+# scp -r /local/path/to/files/* root@173.249.18.165:/home/admin/domains/drupal11.travelm.de/public_html/web/sites/default/files/
+
+# Set proper permissions after copying
+chown -R admin:admin web/sites/default/files
+find web/sites/default/files -type d -exec chmod 755 {} \;
+find web/sites/default/files -type f -exec chmod 644 {} \;
 ```
 
 ## Phase 5: Final Configuration
@@ -215,7 +258,7 @@ cd /home/admin/domains/drupal11.travelm.de/public_html
 # Update database
 ./vendor/bin/drush updatedb
 
-# Import configuration
+# Import configuration from git-tracked directory
 ./vendor/bin/drush config:import
 
 # Clear cache again
@@ -244,9 +287,12 @@ chmod +x deploy.sh
 ### Step 14: Test the Site
 1. Visit https://drupal11.travelm.de
 2. Check that the site loads correctly
-3. Test admin login
+3. Test admin login at https://drupal11.travelm.de/user/login
 4. Verify media files are accessible
 5. Check that all functionality works
+6. Test configuration import: `./vendor/bin/drush config:status`
+7. Verify cache is working: Check page load times
+8. Test responsive design on mobile devices
 
 ## Future Deployments
 
