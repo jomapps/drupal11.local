@@ -251,3 +251,4 @@ config/stage/
 # MULTISITE TESTING
 # =============================================================================
 web/sites/simpletest/
+db_backups

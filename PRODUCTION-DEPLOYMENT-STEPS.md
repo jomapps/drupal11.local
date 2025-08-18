@@ -96,6 +96,10 @@ composer install --no-dev --optimize-autoloader
 chown -R admin:admin /home/admin/domains/drupal11.travelm.de/public_html
 find /home/admin/domains/drupal11.travelm.de/public_html -type d -exec chmod 755 {} \;
 find /home/admin/domains/drupal11.travelm.de/public_html -type f -exec chmod 644 {} \;
+
+# Fix vendor/bin permissions (required for drush and other executables)
+find vendor/bin -type f -exec chmod 755 {} \;
+find vendor -type f \( -name "drush" -o -name "*.phar" \) -exec chmod 755 {} \;
 ```
 
 ## Phase 3: Configure Production Environment
@@ -123,11 +127,8 @@ $databases['default']['default'] = array (
   'password' => 'kaHsRGs5fDfTjfMytfrk',
   'prefix' => '',
   'host' => 'localhost',
-  'port' => 3306,
-  'isolation_level' => 'READ COMMITTED',
+  'port' => '3306',
   'driver' => 'mysql',
-  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
-  'autoload' => 'core/modules/mysql\\src\\Driver\\Database\\mysql\\',
 );
 
 /**
@@ -199,12 +200,45 @@ cp default.services.yml services.yml
 chmod 644 services.yml
 ```
 
-### Step 9: Create Files Directory
+### Step 9: Create Files Directory and Fix DirectAdmin Compatibility
 ```bash
 # Create files directory with proper permissions
 mkdir -p files
 chown -R admin:admin files
 chmod 755 files
+
+# Navigate to files directory and fix .htaccess for DirectAdmin compatibility
+cd web/sites/default/files
+
+# Backup original .htaccess if it exists
+cp .htaccess .htaccess.backup 2>/dev/null || true
+
+# Create DirectAdmin-compatible .htaccess (removes ExecCGI directive)
+cat > .htaccess << 'HTACCESS_EOF'
+# Deny access to all PHP files
+<Files "*.php">
+  Order Deny,Allow
+  Deny from all
+</Files>
+
+# Deny access to configuration files
+<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
+  Order allow,deny
+</FilesMatch>
+
+# Don't show directory listings for URLs which map to a directory
+Options -Indexes
+
+# Follow symbolic links in this directory
+Options +FollowSymLinks
+HTACCESS_EOF
+
+# Set proper permissions
+chmod 644 .htaccess
+chown admin:admin .htaccess
+
+# Return to project root
+cd /home/admin/domains/drupal11.travelm.de/public_html
 ```
 
 ## Phase 4: Database and Files Setup
@@ -252,6 +286,10 @@ find web/sites/default/files -type f -exec chmod 644 {} \;
 # Navigate to Drupal root
 cd /home/admin/domains/drupal11.travelm.de/public_html
 
+# Switch to admin user if running as root
+su - admin
+cd /home/admin/domains/drupal11.travelm.de/public_html
+
 # Clear cache
 ./vendor/bin/drush cache:rebuild
 
@@ -263,6 +301,14 @@ cd /home/admin/domains/drupal11.travelm.de/public_html
 
 # Clear cache again
 ./vendor/bin/drush cache:rebuild
+
+# Create Thunder profile assets in expected location (fixes 404 errors)
+mkdir -p web/profiles/contrib/thunder/files/images/
+cp web/profiles/thunder/files/favicon.ico web/profiles/contrib/thunder/files/ 2>/dev/null || true
+cp web/profiles/thunder/files/images/logo.svg web/profiles/contrib/thunder/files/images/ 2>/dev/null || true
+chown -R admin:admin web/profiles/contrib/ 2>/dev/null || true
+chmod 644 web/profiles/contrib/thunder/files/favicon.ico 2>/dev/null || true
+chmod 644 web/profiles/contrib/thunder/files/images/logo.svg 2>/dev/null || true
 ```
 
 ### Step 13: Set Up Future Git Deployment
@@ -286,13 +332,40 @@ chmod +x deploy.sh
 
 ### Step 14: Test the Site
 1. Visit https://drupal11.travelm.de
-2. Check that the site loads correctly
+2. Check that the site loads correctly with CSS styling
 3. Test admin login at https://drupal11.travelm.de/user/login
 4. Verify media files are accessible
 5. Check that all functionality works
 6. Test configuration import: `./vendor/bin/drush config:status`
 7. Verify cache is working: Check page load times
 8. Test responsive design on mobile devices
+9. Check browser console for any remaining 404 errors
+10. Verify Thunder profile assets load correctly (logo.svg, favicon.ico)
+
+## Troubleshooting Common Issues
+
+### CSS/JS Not Loading (500 Errors)
+If you encounter 500 errors on CSS/JS files:
+```bash
+# Disable CSS/JS aggregation temporarily
+./vendor/bin/drush config:set system.performance css.preprocess 0
+./vendor/bin/drush config:set system.performance js.preprocess 0
+./vendor/bin/drush cache:rebuild
+
+# Check DirectAdmin error logs
+tail -20 /home/admin/domains/drupal11.travelm.de/logs/error.log
+```
+
+### Drush Permission Denied
+If drush commands fail with permission denied:
+```bash
+# Fix vendor/bin permissions
+find vendor/bin -type f -exec chmod 755 {} \;
+find vendor -type f \( -name "drush" -o -name "*.phar" \) -exec chmod 755 {} \;
+```
+
+### Database Connection Issues
+If you see MySQL driver errors, ensure settings.php uses the simplified database configuration without namespace/autoload directives.
 
 ## Future Deployments
 
@@ -300,6 +373,9 @@ For future updates, you can simply:
 ```bash
 # SSH into production
 ssh root@173.249.18.165
+
+# Switch to admin user
+su - admin
 
 # Run deployment script
 cd /home/admin/domains/drupal11.travelm.de/public_html
@@ -310,6 +386,8 @@ Or manually:
 ```bash
 git pull origin master
 composer install --no-dev --optimize-autoloader
+# Fix permissions after composer install
+find vendor/bin -type f -exec chmod 755 {} \;
 ./vendor/bin/drush updatedb -y
 ./vendor/bin/drush config:import -y
 ./vendor/bin/drush cache:rebuild
