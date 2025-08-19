@@ -5,8 +5,3 @@ package: Media
 core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:media
-
-# Information added by Drupal.org packaging script on 2025-07-15
-version: '3.0.0'
-project: 'media_entity_pinterest'
-datestamp: 1752622957

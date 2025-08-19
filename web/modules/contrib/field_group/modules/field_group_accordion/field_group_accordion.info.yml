@@ -8,8 +8,3 @@ lifecycle_link: https://www.drupal.org/project/field_group/issues/3363859
 dependencies:
   - drupal:field
   - jquery_ui_accordion:jquery_ui_accordion
-
-# Information added by Drupal.org packaging script on 2025-04-23
-version: '4.0.0'
-project: 'field_group'
-datestamp: 1745408691

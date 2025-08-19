@@ -10,8 +10,3 @@ dependencies:
   - tagify:tagify_facets
   - drupal:views
   - drupal:block
-
-# Information added by Drupal.org packaging script on 2025-07-17
-version: '1.2.41'
-project: 'tagify'
-datestamp: 1752770415

@@ -1,0 +1,9 @@
+autochecked
+capi
+capii
+capil
+Carden
+incrementer
+maintainership
+strtolowercamel
+unconed

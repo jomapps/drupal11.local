@@ -6,8 +6,3 @@ core_version_requirement: ^11.0
 dependencies:
   - ui_icons:ui_icons
   - ui_icons:ui_icons_field
-
-# Information added by Drupal.org packaging script on 2025-07-17
-version: '1.2.41'
-project: 'tagify'
-datestamp: 1752770415

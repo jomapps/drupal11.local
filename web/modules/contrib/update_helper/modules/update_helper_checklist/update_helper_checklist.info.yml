@@ -6,8 +6,3 @@ dependencies:
   - update_helper:update_helper
   - checklistapi:checklistapi
 package: Configuration
-
-# Information added by Drupal.org packaging script on 2024-09-02
-version: '4.1.0'
-project: 'update_helper'
-datestamp: 1725278662

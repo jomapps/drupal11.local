@@ -7,8 +7,3 @@ dependencies:
   - drupal:node
   - drupal:file
   - drupal:image
-
-# Information added by Drupal.org packaging script on 2025-05-05
-version: '3.0.0-rc21'
-project: 'inline_entity_form'
-datestamp: 1746459783

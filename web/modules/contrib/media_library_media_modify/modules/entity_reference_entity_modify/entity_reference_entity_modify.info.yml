@@ -8,8 +8,3 @@ dependencies:
   - media_library_media_modify:media_library_media_modify
 test_dependencies:
   - inline_entity_form:inline_entity_form
-
-# Information added by Drupal.org packaging script on 2024-09-10
-version: '2.0.0-beta1'
-project: 'media_library_media_modify'
-datestamp: 1725960753

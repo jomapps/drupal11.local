@@ -6,8 +6,3 @@ package: SEO
 dependencies:
   - page_manager:page_manager
   - metatag:metatag
-
-# Information added by Drupal.org packaging script on 2025-05-29
-version: '2.1.1'
-project: 'metatag'
-datestamp: 1748539493

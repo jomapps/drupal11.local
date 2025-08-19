@@ -20,8 +20,3 @@ hidden: false
 name: Paragraphs Demo
 package: Paragraphs
 type: module
-
-# Information added by Drupal.org packaging script on 2025-03-02
-version: '8.x-1.19'
-project: 'paragraphs'
-datestamp: 1740907078

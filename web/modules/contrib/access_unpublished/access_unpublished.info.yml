@@ -8,8 +8,3 @@ test_dependencies:
   - drupal:graphql
 dependencies:
   - drupal:options
-
-# Information added by Drupal.org packaging script on 2024-06-29
-version: '8.x-1.6'
-project: 'access_unpublished'
-datestamp: 1719701025

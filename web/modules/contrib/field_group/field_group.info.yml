@@ -5,8 +5,3 @@ package : Fields
 core_version_requirement: ^10.3 || ^11
 dependencies:
   - drupal:field
-
-# Information added by Drupal.org packaging script on 2025-04-23
-version: '4.0.0'
-project: 'field_group'
-datestamp: 1745408691

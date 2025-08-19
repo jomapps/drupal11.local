@@ -3,8 +3,3 @@ type: module
 description: 'A utility module that enables different versions of optional configuration to be selected on module install.'
 core_version_requirement: ^10.2 || ^11
 container_rebuild_required: true
-
-# Information added by Drupal.org packaging script on 2024-12-11
-version: '3.0.0'
-project: 'config_selector'
-datestamp: 1733908159

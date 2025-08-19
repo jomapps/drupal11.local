@@ -7,8 +7,3 @@ configure: entity.linkit_profile.collection
 test_dependencies:
   - imce:imce
   - drupal:ckeditor
-
-# Information added by Drupal.org packaging script on 2025-08-05
-version: '7.0.8'
-project: 'linkit'
-datestamp: 1754406733

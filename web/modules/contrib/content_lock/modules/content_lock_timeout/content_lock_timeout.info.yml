@@ -7,8 +7,3 @@ dependencies:
   - content_lock:content_lock
 lifecycle: deprecated
 lifecycle_link: 'https://www.drupal.org/node/3530741'
-
-# Information added by Drupal.org packaging script on 2025-07-08
-version: '3.0.0-alpha4'
-project: 'content_lock'
-datestamp: 1751989970

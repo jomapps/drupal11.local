@@ -10,8 +10,3 @@ dependencies:
   - entity_usage:entity_usage
 test_dependencies:
   - entity_browser:entity_browser
-
-# Information added by Drupal.org packaging script on 2025-03-02
-version: '8.x-1.19'
-project: 'paragraphs'
-datestamp: 1740907078

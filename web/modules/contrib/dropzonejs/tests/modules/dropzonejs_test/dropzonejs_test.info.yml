@@ -6,8 +6,3 @@ dependencies:
  - drupal:media
  - dropzonejs:dropzonejs
  - dropzonejs:dropzonejs_eb_widget
-
-# Information added by Drupal.org packaging script on 2024-08-11
-version: '8.x-2.11'
-project: 'dropzonejs'
-datestamp: 1723381579

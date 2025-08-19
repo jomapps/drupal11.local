@@ -6,8 +6,3 @@ install:
   - drupal:config_test
   - config_selector:config_selector
   - config_selector:config_selector_test_provides_multiple
-
-# Information added by Drupal.org packaging script on 2024-12-11
-version: '3.0.0'
-project: 'config_selector'
-datestamp: 1733908159
