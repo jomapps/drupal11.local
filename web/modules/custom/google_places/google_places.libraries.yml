@@ -1,0 +1,9 @@
+places:
+  version: 1.x
+  js:
+    js/places.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui.autocomplete
+    - core/drupal
+    - core/drupalSettings

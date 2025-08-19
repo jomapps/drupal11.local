@@ -1,0 +1,8 @@
+services:
+  google_places.json_consumer:
+    class: Drupal\google_places\PlacesJsonConsumer
+    arguments: ["@http_client"]
+    
+  google_places.photo_importer:
+    class: Drupal\google_places\PlacesPhotoImporter
+    arguments: ["@http_client", "@entity_type.manager", "@file_system"]

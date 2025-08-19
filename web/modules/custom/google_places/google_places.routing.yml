@@ -1,0 +1,35 @@
+google_places.test:
+  path: '/google-places/test'
+  defaults:
+    _controller: '\Drupal\google_places\Controller\TestController::test'
+  requirements:
+    _access: 'TRUE'
+
+google_places.autocomplete:
+  path: '/google-places/autocomplete'
+  defaults:
+    _controller: '\Drupal\google_places\Controller\TestController::autocomplete'
+  requirements:
+    _access: 'TRUE'
+
+google_places.detail:
+  path: '/google-places/detail'
+  defaults:
+    _controller: '\Drupal\google_places\Controller\TestController::detail'
+  requirements:
+    _access: 'TRUE'
+
+google_places.import_photo_and_save:
+  path: '/google-places/import-photo-and-save'
+  defaults:
+    _controller: '\Drupal\google_places\Controller\TestController::importPhotoAndSave'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
+
+google_places.debug_photo:
+  path: '/google-places/debug-photo'
+  defaults:
+    _controller: '\Drupal\google_places\Controller\TestController::debugPhoto'
+  requirements:
+    _access: 'TRUE'

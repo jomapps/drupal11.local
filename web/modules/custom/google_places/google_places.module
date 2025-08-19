@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Google Places module functionality.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_node_form_alter().
+ */
+function google_places_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $node = $form_state->getFormObject()->getEntity();
+
+  // Only process place nodes or forms with field_place_id.
+  if ((!$node->isNew() && $node->getEntityTypeId() !== 'node') || 
+      ($node->getEntityTypeId() === 'node' && $node->bundle() !== 'place' && !isset($form['field_place_id']))) {
+    return;
+  }
+
+  // Attach Google Places functionality.
+  $form['#attached']['library'][] = 'google_places/places';
+  $form['#attached']['drupalSettings']['places'] = [
+    'url' => [
+      'details' => '/google-places/detail',
+      'autocomplete' => '/google-places/autocomplete',
+    ],
+    'input' => '#edit-field-place-id-0-value',
+  ];
+
+  // Add placeholder to Place ID field.
+  if (isset($form['field_place_id']['widget'][0]['value'])) {
+    $form['field_place_id']['widget'][0]['value']['#placeholder'] = t('Search for a place...');
+  }
+}
