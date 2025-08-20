@@ -23,12 +23,12 @@ function google_places_form_node_form_alter(&$form, FormStateInterface $form_sta
     return;
   }
   
-  // Add Google Places functionality
+  // Add Google Places functionality (positioned between Grundinfos and Place Details)
   $form['google_places'] = [
     '#type' => 'details',
     '#title' => t('Google Places'),
     '#open' => TRUE,
-    '#weight' => 50,
+    '#weight' => 1.5, // Position between Grundinfos (weight 1) and Place Details (weight 2)
   ];
   
   $form['google_places']['get_details_button'] = [
