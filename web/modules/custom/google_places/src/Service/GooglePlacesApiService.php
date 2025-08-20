@@ -516,6 +516,17 @@ class GooglePlacesApiService {
       ]);
     }
 
+    // Populate Google Map URL
+    if ($node->hasField('field_google_map_url')) {
+      $google_map_url = 'https://maps.google.com/maps/place/?q=place_id:' . $place_id;
+      $populated_fields['field_google_map_url[0][uri]'] = $google_map_url;
+      $populated_fields['field_google_map_url[0][title]'] = 'Google Maps';
+      
+      $this->logger->debug('Google Map URL field mapped: @url', [
+        '@url' => $google_map_url,
+      ]);
+    }
+
     // Populate opening hours
     if (!empty($place_data['opening_hours']['weekday_text']) && $node->hasField('field_opening_hours')) {
       $hours_text = implode(", ", $place_data['opening_hours']['weekday_text']);
