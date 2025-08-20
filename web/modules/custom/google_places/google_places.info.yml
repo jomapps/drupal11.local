@@ -1,0 +1,10 @@
+name: Google Places
+type: module
+description: 'Google Places API integration for fetching place data and images in German language'
+core_version_requirement: ^11
+package: Custom
+dependencies:
+  - drupal:node
+  - drupal:field
+  - drupal:file
+version: 1.0.0

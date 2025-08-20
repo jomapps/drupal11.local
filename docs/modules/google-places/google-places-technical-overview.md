@@ -2,10 +2,11 @@
 
 ## Project Information
 - **Project**: Drupal 11 Google Places Integration
-- **Environment**: Development (Ubuntu WSL2)
+- **Local Development**: http://drupal11.local/ (Ubuntu WSL2)
+- **Production Site**: http://drupal11.travelm.de/ (Thunder-powered)
 - **Database**: drupal11_local (MySQL)
 - **Document Version**: 1.0
-- **Last Updated**: August 19, 2025
+- **Last Updated**: August 20, 2025
 
 ## Module Overview
 
@@ -50,14 +51,13 @@ $settings['maps_api_key_open'] = 'AIzaSyBLzZBWyuCUqSjX_YDlG0JgJOL0dX3-7-I';
 
 ## Known Issues
 
-### Image Fetching Problem
+### Image Fetching Problem - ROOT CAUSE IDENTIFIED ✅
 - **Issue**: Images not being permitted/blocked during fetch
-- **Location**: Production environment (not yet reproduced in development)
-- **Suspected Causes**:
-  1. Google API key restrictions
-  2. Rate limiting
-  3. Missing permissions for Places Photos API
-  4. Image URL access restrictions
+- **Production Site**: http://drupal11.travelm.de/ (where issue was first reported)
+- **Development Site**: http://drupal11.local/ (used for reproduction and testing)
+- **Root Cause**: **API Key Invalid** - `REQUEST_DENIED` with message "The provided API key is invalid."
+- **API Response**: `{"error_message": "The provided API key is invalid.", "status": "REQUEST_DENIED"}`
+- **Resolution**: New API key implemented and tested successfully
 
 ### Error Monitoring Setup
 - **Apache Logs**: `/var/log/apache2/error.log`

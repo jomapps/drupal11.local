@@ -1,0 +1,4 @@
+services:
+  google_places.api:
+    class: Drupal\google_places\Service\GooglePlacesApiService
+    arguments: ['@http_client', '@file_system', '@entity_type.manager', '@logger.factory']

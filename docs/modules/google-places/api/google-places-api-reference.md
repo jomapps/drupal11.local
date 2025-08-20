@@ -22,10 +22,12 @@ https://maps.googleapis.com/maps/api/place/photo
 - `key`: API key
 - `maxwidth` OR `maxheight`: Maximum dimension (1-1600)
 
-### Example Request
+### Example Request (with German Language)
 ```bash
 curl "https://maps.googleapis.com/maps/api/place/photo?photoreference=PHOTO_REFERENCE&key=API_KEY&maxwidth=400"
 ```
+
+**Note**: Photos API doesn't support language parameter - images are universal. However, all text-based APIs should include `language=de` for German responses.
 
 ### Response
 - Returns the actual image data (JPEG format)
@@ -34,14 +36,20 @@ curl "https://maps.googleapis.com/maps/api/place/photo?photoreference=PHOTO_REFE
 
 ## Common API Endpoints
 
-### Place Details
+### Place Details (German Language)
 ```
 GET https://maps.googleapis.com/maps/api/place/details/json
 ```
 **Parameters**:
 - `place_id`: Google Place ID (e.g., ChIJ-8pgKuGOsUcRO6gVZxdzOus)
 - `fields`: Comma-separated list (name,photos,rating,etc.)
+- `language`: `de` (for German responses)
 - `key`: API key
+
+**Example**:
+```bash
+curl "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ-8pgKuGOsUcRO6gVZxdzOus&fields=name,formatted_address&language=de&key=API_KEY"
+```
 
 ### Place Search
 ```

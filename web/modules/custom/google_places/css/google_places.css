@@ -1,0 +1,37 @@
+/**
+ * Google Places module styles
+ */
+
+.google-places-get-image {
+  background-color: #0073aa;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.google-places-get-image:hover {
+  background-color: #005a87;
+}
+
+#google-places-result {
+  margin-top: 15px;
+}
+
+#google-places-result .messages {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+#google-places-result .messages--status {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+#google-places-result .messages--error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}

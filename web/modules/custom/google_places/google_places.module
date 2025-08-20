@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Google Places module for integrating with Google Places API.
+ * 
+ * Provides functionality to fetch place data and images from Google Places API
+ * with German language support.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_node_form_alter().
+ * 
+ * Adds Google Places functionality to place content type forms.
+ */
+function google_places_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $node = $form_state->getFormObject()->getEntity();
+  
+  // Only apply to place content type
+  if ($node->getType() !== 'place') {
+    return;
+  }
+  
+  // Add Google Places functionality
+  $form['google_places'] = [
+    '#type' => 'details',
+    '#title' => t('Google Places'),
+    '#open' => TRUE,
+    '#weight' => 50,
+  ];
+  
+  $form['google_places']['get_image_button'] = [
+    '#type' => 'button',
+    '#value' => t('Get image and save'),
+    '#ajax' => [
+      'callback' => 'google_places_get_image_ajax',
+      'wrapper' => 'google-places-result',
+    ],
+    '#attributes' => [
+      'class' => ['google-places-get-image'],
+    ],
+  ];
+  
+  $form['google_places']['result'] = [
+    '#type' => 'markup',
+    '#markup' => '<div id="google-places-result"></div>',
+  ];
+  
+  // Attach our JavaScript and CSS
+  $form['#attached']['library'][] = 'google_places/google_places';
+}
+
+/**
+ * AJAX callback for getting Google Places image.
+ */
+function google_places_get_image_ajax(array &$form, FormStateInterface $form_state) {
+  $response = new \Drupal\Core\Ajax\AjaxResponse();
+  
+  // Get the current node
+  $node = $form_state->getFormObject()->getEntity();
+  
+  try {
+    // Get Google Places service
+    $google_places_service = \Drupal::service('google_places.api');
+    
+    // Attempt to fetch image for this place
+    $result = $google_places_service->fetchPlaceImage($node);
+    
+    if ($result['success']) {
+      $message = t('Image successfully downloaded and saved.');
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+        '<div class="messages messages--status">' . $message . '</div>'));
+    } else {
+      $message = t('Failed to download image: @error', ['@error' => $result['error']]);
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+        '<div class="messages messages--error">' . $message . '</div>'));
+    }
+  } catch (\Exception $e) {
+    $message = t('Error: @error', ['@error' => $e->getMessage()]);
+    $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+      '<div class="messages messages--error">' . $message . '</div>'));
+      
+    // Log the error
+    \Drupal::logger('google_places')->error('Error fetching Google Places image: @error', [
+      '@error' => $e->getMessage(),
+    ]);
+  }
+  
+  return $response;
+}

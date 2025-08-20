@@ -1,0 +1,11 @@
+google_places:
+  version: 1.x
+  css:
+    theme:
+      css/google_places.css: {}
+  js:
+    js/google_places.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
