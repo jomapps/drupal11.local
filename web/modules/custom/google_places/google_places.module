@@ -135,9 +135,27 @@ function google_places_get_image_ajax(array &$form, FormStateInterface $form_sta
     $result = $google_places_service->fetchPlaceImage($node);
     
     if ($result['success']) {
-      $message = t('Image successfully downloaded and saved. Opening hours have been imported.');
+      if (isset($result['media_id'])) {
+        $message = t('Image successfully downloaded and attached to place! Media ID: @media_id', [
+          '@media_id' => $result['media_id'],
+        ]);
+      } else {
+        $message = t('Image successfully downloaded and saved. Opening hours have been imported.');
+      }
       $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
         '<div class="messages messages--status">' . $message . '</div>'));
+      
+      // If we have a media entity, trigger a page reload to show the attached image
+      if (isset($result['media_id'])) {
+        $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand('body', 'prepend', [
+          '<div class="messages messages--status">Image attached! Refreshing page to display...</div>'
+        ]));
+        // Add a small delay and then reload
+        $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand(NULL, 'setTimeout', [
+          'function(){ location.reload(); }', 
+          2000
+        ]));
+      }
     } else {
       $message = t('Failed to download image: @error', ['@error' => $result['error']]);
       $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 

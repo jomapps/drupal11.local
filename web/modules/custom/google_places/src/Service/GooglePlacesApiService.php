@@ -11,6 +11,8 @@ use Drupal\node\NodeInterface;
 use Drupal\taxonomy\Entity\Term;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use Drupal\file\Entity\File;
+use Drupal\media\Entity\Media;
 
 /**
  * Google Places API service.
@@ -118,6 +120,24 @@ class GooglePlacesApiService {
       $photo_reference = $photos[0]['photo_reference'];
       $image_result = $this->downloadPlacePhoto($photo_reference, $place_id);
 
+      if ($image_result['success']) {
+        // Create media entity and attach to node
+        $media_result = $this->createMediaEntityAndAttach($image_result, $node, $place_id);
+        if ($media_result['success']) {
+          return [
+            'success' => TRUE,
+            'message' => 'Image downloaded and attached to place successfully.',
+            'media_id' => $media_result['media_id'],
+            'file_uri' => $image_result['file_uri'],
+          ];
+        } else {
+          return [
+            'success' => FALSE,
+            'error' => 'Image downloaded but failed to attach: ' . $media_result['error'],
+          ];
+        }
+      }
+
       return $image_result;
 
     } catch (\Exception $e) {
@@ -128,6 +148,95 @@ class GooglePlacesApiService {
       return [
         'success' => FALSE,
         'error' => $e->getMessage(),
+      ];
+    }
+  }
+
+  /**
+   * Create media entity and attach to node.
+   *
+   * @param array $image_result
+   *   Result from downloadPlacePhoto.
+   * @param \Drupal\node\NodeInterface $node
+   *   The place node.
+   * @param string $place_id
+   *   The Google Place ID.
+   *
+   * @return array
+   *   Result array with success status and data/error.
+   */
+  protected function createMediaEntityAndAttach(array $image_result, NodeInterface $node, $place_id) {
+    try {
+      // Create file entity from the downloaded image
+      $file = File::create([
+        'uri' => $image_result['file_uri'],
+        'status' => 1,
+        'uid' => 1,
+      ]);
+      $file->save();
+
+      if (!$file) {
+        return [
+          'success' => FALSE,
+          'error' => 'Failed to create file entity.',
+        ];
+      }
+
+      // Create media entity
+      $place_name = $node->getTitle() ?: 'Google Places Image';
+      $media = Media::create([
+        'bundle' => 'image',
+        'name' => $place_name . ' - Google Places Image',
+        'field_image' => [
+          'target_id' => $file->id(),
+          'alt' => $place_name,
+          'title' => 'Image from Google Places for ' . $place_name,
+        ],
+        'status' => 1,
+        'uid' => 1,
+      ]);
+      $media->save();
+
+      if (!$media) {
+        return [
+          'success' => FALSE,
+          'error' => 'Failed to create media entity.',
+        ];
+      }
+
+      // Attach media to node's field_teaser_media field
+      if ($node->hasField('field_teaser_media')) {
+        $node->set('field_teaser_media', [
+          'target_id' => $media->id(),
+        ]);
+        $node->save();
+        
+        $this->logger->info('Successfully attached media @media_id to node @node_id for place @place_id', [
+          '@media_id' => $media->id(),
+          '@node_id' => $node->id(),
+          '@place_id' => $place_id,
+        ]);
+
+        return [
+          'success' => TRUE,
+          'media_id' => $media->id(),
+          'file_id' => $file->id(),
+        ];
+      } else {
+        return [
+          'success' => FALSE,
+          'error' => 'Node does not have field_teaser_media field.',
+        ];
+      }
+
+    } catch (\Exception $e) {
+      $this->logger->error('Error creating media entity: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+      
+      return [
+        'success' => FALSE,
+        'error' => 'Exception: ' . $e->getMessage(),
       ];
     }
   }
@@ -541,6 +650,11 @@ class GooglePlacesApiService {
       ]);
     }
 
+    // Populate address field
+    if ($node->hasField('field_address')) {
+      $this->populateAddressField($place_data, $populated_fields);
+    }
+
     // Populate entity reference fields
     $entity_ref_messages = $this->populateEntityReferenceFields($place_data, $populated_fields, $node);
 
@@ -564,6 +678,74 @@ class GooglePlacesApiService {
     }
 
     return $result;
+  }
+
+  /**
+   * Populate address field with place data.
+   *
+   * @param array $place_data
+   *   The place data from Google Places API.
+   * @param array &$populated_fields
+   *   The populated fields array to modify.
+   */
+  protected function populateAddressField(array $place_data, array &$populated_fields) {
+    // Extract address components from Google Places data
+    $address_components = $place_data['address_components'] ?? [];
+    
+    // Initialize address parts
+    $country_code = null;
+    $street_address = null;
+    $city = null;
+    $postal_code = null;
+    $organization = null;
+    
+    // Parse address components
+    foreach ($address_components as $component) {
+      $types = $component['types'];
+      $long_name = $component['long_name'];
+      
+      if (in_array('country', $types)) {
+        $country_code = $component['short_name']; // DE
+      }
+      elseif (in_array('route', $types)) {
+        $street_address = $long_name; // Bei den Sankt Pauli-Landungsbrücken
+      }
+      elseif (in_array('locality', $types)) {
+        $city = $long_name; // Hamburg
+      }
+      elseif (in_array('postal_code', $types)) {
+        $postal_code = $long_name; // 20359
+      }
+    }
+    
+    // Populate address field components
+    if ($country_code) {
+      $populated_fields['field_address[0][address][country_code]'] = $country_code;
+      $this->logger->debug('Address country mapped: @country', ['@country' => $country_code]);
+    }
+    
+    if ($street_address) {
+      $populated_fields['field_address[0][address][address_line1]'] = $street_address;
+      $this->logger->debug('Address street mapped: @street', ['@street' => $street_address]);
+    }
+    
+    if ($city) {
+      $populated_fields['field_address[0][address][locality]'] = $city;
+      $this->logger->debug('Address city mapped: @city', ['@city' => $city]);
+    }
+    
+    // Use place name as organization if available
+    if (!empty($place_data['name'])) {
+      $populated_fields['field_address[0][address][organization]'] = $place_data['name'];
+      $this->logger->debug('Address organization mapped: @org', ['@org' => $place_data['name']]);
+    }
+    
+    $this->logger->info('Address field populated - Country: @country, Street: @street, City: @city, Organization: @org', [
+      '@country' => $country_code ?: 'N/A',
+      '@street' => $street_address ?: 'N/A', 
+      '@city' => $city ?: 'N/A',
+      '@org' => $place_data['name'] ?? 'N/A',
+    ]);
   }
 
   /**
