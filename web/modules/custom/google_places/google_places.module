@@ -79,8 +79,25 @@ function google_places_get_details_ajax(array &$form, FormStateInterface $form_s
     
     if ($result['success']) {
       $message = t('Place details retrieved and populated successfully.');
-      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
-        '<div class="messages messages--status">' . $message . '</div>'));
+      
+      // Add any entity reference messages
+      $all_messages = [$message];
+      if (!empty($result['messages'])) {
+        foreach ($result['messages'] as $entity_message) {
+          $all_messages[] = $entity_message;
+        }
+      }
+      
+      // Create message HTML with appropriate classes
+      $message_html = '';
+      $message_html .= '<div class="messages messages--status">' . array_shift($all_messages) . '</div>';
+      
+      // Add warning messages for entity reference issues
+      foreach ($all_messages as $warning_message) {
+        $message_html .= '<div class="messages messages--warning">' . $warning_message . '</div>';
+      }
+      
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', $message_html));
       
       // Update form fields with the populated data
       foreach ($result['populated_fields'] as $field_name => $value) {

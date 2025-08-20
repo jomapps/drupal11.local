@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\node\NodeInterface;
+use Drupal\taxonomy\Entity\Term;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 
@@ -529,6 +530,9 @@ class GooglePlacesApiService {
       ]);
     }
 
+    // Populate entity reference fields
+    $entity_ref_messages = $this->populateEntityReferenceFields($place_data, $populated_fields, $node);
+
     $this->logger->info('Successfully populated place data for place @place_id', [
       '@place_id' => $place_id,
     ]);
@@ -538,10 +542,258 @@ class GooglePlacesApiService {
       '@fields' => json_encode($populated_fields),
     ]);
 
-    return [
+    $result = [
       'success' => TRUE,
       'populated_fields' => $populated_fields,
     ];
+
+    // Add entity reference messages if any
+    if (!empty($entity_ref_messages)) {
+      $result['messages'] = $entity_ref_messages;
+    }
+
+    return $result;
+  }
+
+  /**
+   * Populate entity reference fields with taxonomy terms.
+   *
+   * @param array $place_data
+   *   The place data from Google Places API.
+   * @param array &$populated_fields
+   *   The populated fields array to modify.
+   * @param \Drupal\node\NodeInterface $node
+   *   The node being populated.
+   *
+   * @return array
+   *   Array of messages for fields that couldn't be populated.
+   */
+  protected function populateEntityReferenceFields(array $place_data, array &$populated_fields, NodeInterface $node) {
+    $messages = [];
+
+    // Populate Region field
+    if ($node->hasField('field_region')) {
+      $region_info = $this->getRegionInfo($place_data);
+      if ($region_info['term_id']) {
+        $populated_fields['field_region[0][target_id]'] = $region_info['term_id'];
+        $this->logger->debug('Region field mapped to term ID: @term_id (@name)', [
+          '@term_id' => $region_info['term_id'],
+          '@name' => $region_info['name'],
+        ]);
+      } else {
+        $region_name = $region_info['name'] ?: 'Unknown';
+        $messages[] = "Region '$region_name' was not found in the system. Please select the region manually.";
+        $this->logger->info('Region not found: @region. Available regions need to be manually managed.', [
+          '@region' => $region_name,
+        ]);
+      }
+    }
+
+    // Populate Place Type field
+    if ($node->hasField('field_place_type')) {
+      $place_type_info = $this->getPlaceTypeInfo($place_data);
+      if ($place_type_info['term_id']) {
+        // For entity reference autocomplete fields, use the format "Term Name (Term ID)"
+        $display_value = $place_type_info['name'] . ' (' . $place_type_info['term_id'] . ')';
+        $populated_fields['field_place_type[0][target_id]'] = $display_value;
+        
+        $this->logger->debug('Place type field mapped to term ID: @term_id (@name) - Google types: @types', [
+          '@term_id' => $place_type_info['term_id'],
+          '@name' => $place_type_info['name'],
+          '@types' => implode(', ', $place_type_info['google_types']),
+        ]);
+      } else {
+        $google_types = implode(', ', $place_type_info['google_types']);
+        $messages[] = "Place type not mapped. Google types: $google_types. Please select category manually.";
+        $this->logger->info('Place type not mapped. Google types: @types', [
+          '@types' => $google_types,
+        ]);
+      }
+    }
+
+    return $messages;
+  }
+
+  /**
+   * Get Region information from place data.
+   *
+   * @param array $place_data
+   *   The place data from Google Places API.
+   *
+   * @return array
+   *   Array with 'name', 'term_id' keys.
+   */
+  protected function getRegionInfo(array $place_data) {
+    // Extract region from address components
+    $region_name = null;
+    
+    if (!empty($place_data['address_components'])) {
+      foreach ($place_data['address_components'] as $component) {
+        // Look for administrative_area_level_1 (state/region)
+        if (in_array('administrative_area_level_1', $component['types'])) {
+          $region_name = $component['long_name'];
+          break;
+        }
+      }
+    }
+
+    if (!$region_name) {
+      $this->logger->debug('No region found in place data');
+      return ['name' => null, 'term_id' => null];
+    }
+
+    // Only find existing terms, don't create new ones for regions
+    $term_id = $this->findExistingTaxonomyTerm($region_name, 'region');
+    
+    return [
+      'name' => $region_name,
+      'term_id' => $term_id,
+    ];
+  }
+
+  /**
+   * Get Place Type information from place data.
+   *
+   * @param array $place_data
+   *   The place data from Google Places API.
+   *
+   * @return array
+   *   Array with 'name', 'term_id', 'google_types' keys.
+   */
+  protected function getPlaceTypeInfo(array $place_data) {
+    // Extract place types from Google Places API
+    if (empty($place_data['types'])) {
+      $this->logger->debug('No place types found in place data');
+      return ['name' => null, 'term_id' => null, 'google_types' => []];
+    }
+
+    $google_types = $place_data['types'];
+
+    // Map Google place types to more user-friendly names
+    $type_mapping = [
+      'tourist_attraction' => 'Touristenattraktion',
+      'establishment' => 'Einrichtung',
+      'point_of_interest' => 'Sehenswürdigkeit',
+      'museum' => 'Museum',
+      'restaurant' => 'Restaurant',
+      'lodging' => 'Unterkunft',
+      'park' => 'Park',
+      'zoo' => 'Zoo',
+      'aquarium' => 'Aquarium',
+      'amusement_park' => 'Freizeitpark',
+    ];
+
+    // Find the first mapped type
+    foreach ($google_types as $google_type) {
+      if (isset($type_mapping[$google_type])) {
+        $mapped_type = $type_mapping[$google_type];
+        $term_id = $this->findOrCreateTaxonomyTerm($mapped_type, 'place_types');
+        return [
+          'name' => $mapped_type,
+          'term_id' => $term_id,
+          'google_types' => $google_types,
+        ];
+      }
+    }
+
+    // If no mapping found, return info without creating term
+    return [
+      'name' => null,
+      'term_id' => null,
+      'google_types' => $google_types,
+    ];
+  }
+
+  /**
+   * Find existing taxonomy term (without creating).
+   *
+   * @param string $term_name
+   *   The term name to find.
+   * @param string $vocabulary_id
+   *   The vocabulary machine name.
+   *
+   * @return int|null
+   *   The term ID or NULL if not found.
+   */
+  protected function findExistingTaxonomyTerm($term_name, $vocabulary_id) {
+    try {
+      $existing_terms = $this->entityTypeManager
+        ->getStorage('taxonomy_term')
+        ->loadByProperties([
+          'name' => $term_name,
+          'vid' => $vocabulary_id,
+        ]);
+
+      if (!empty($existing_terms)) {
+        $term = reset($existing_terms);
+        return $term->id();
+      }
+
+      return null;
+
+    } catch (\Exception $e) {
+      $this->logger->error('Failed to find taxonomy term @name in @vocab: @error', [
+        '@name' => $term_name,
+        '@vocab' => $vocabulary_id,
+        '@error' => $e->getMessage(),
+      ]);
+      return null;
+    }
+  }
+
+  /**
+   * Find or create a taxonomy term in the specified vocabulary.
+   *
+   * @param string $term_name
+   *   The term name to find or create.
+   * @param string $vocabulary_id
+   *   The vocabulary machine name.
+   *
+   * @return int|null
+   *   The term ID or NULL if creation failed.
+   */
+  protected function findOrCreateTaxonomyTerm($term_name, $vocabulary_id) {
+    try {
+      // First, try to find existing term
+      $existing_terms = $this->entityTypeManager
+        ->getStorage('taxonomy_term')
+        ->loadByProperties([
+          'name' => $term_name,
+          'vid' => $vocabulary_id,
+        ]);
+
+      if (!empty($existing_terms)) {
+        $term = reset($existing_terms);
+        $this->logger->debug('Found existing term: @name (ID: @id)', [
+          '@name' => $term_name,
+          '@id' => $term->id(),
+        ]);
+        return $term->id();
+      }
+
+      // Create new term if not found
+      $term = Term::create([
+        'name' => $term_name,
+        'vid' => $vocabulary_id,
+      ]);
+      $term->save();
+
+      $this->logger->info('Created new taxonomy term: @name (ID: @id) in vocabulary @vocab', [
+        '@name' => $term_name,
+        '@id' => $term->id(),
+        '@vocab' => $vocabulary_id,
+      ]);
+
+      return $term->id();
+
+    } catch (\Exception $e) {
+      $this->logger->error('Failed to find or create taxonomy term @name in @vocab: @error', [
+        '@name' => $term_name,
+        '@vocab' => $vocabulary_id,
+        '@error' => $e->getMessage(),
+      ]);
+      return null;
+    }
   }
 
   /**
@@ -597,7 +849,7 @@ class GooglePlacesApiService {
     
     $params = [
       'place_id' => $place_id,
-      'fields' => 'name,formatted_address,geometry,opening_hours,formatted_phone_number,website',
+      'fields' => 'name,formatted_address,geometry,opening_hours,formatted_phone_number,website,types,address_components',
       'language' => 'de', // German language
       'key' => $this->apiKey,
     ];
