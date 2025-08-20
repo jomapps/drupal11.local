@@ -472,7 +472,25 @@ class GooglePlacesApiService {
 
     // Populate phone number
     if (!empty($place_data['formatted_phone_number']) && $node->hasField('field_phone')) {
-      $populated_fields['field_phone[0][value]'] = $place_data['formatted_phone_number'];
+      // Try multiple possible field name formats
+      $phone_field_names = [
+        'field_phone[0][value]',
+        'field_phone[value]',
+        'field_phone'
+      ];
+      
+      foreach ($phone_field_names as $field_name) {
+        $populated_fields[$field_name] = $place_data['formatted_phone_number'];
+      }
+      
+      $this->logger->debug('Phone field mapped: @phone to multiple field formats', [
+        '@phone' => $place_data['formatted_phone_number'],
+      ]);
+    } else {
+      $this->logger->debug('Phone field not mapped. Has data: @has_data, Has field: @has_field', [
+        '@has_data' => !empty($place_data['formatted_phone_number']) ? 'yes' : 'no',
+        '@has_field' => $node->hasField('field_phone') ? 'yes' : 'no',
+      ]);
     }
 
     // Populate website URL
@@ -482,12 +500,25 @@ class GooglePlacesApiService {
 
     // Populate opening hours
     if (!empty($place_data['opening_hours']['weekday_text']) && $node->hasField('field_opening_hours')) {
-      $hours_text = implode("\n", $place_data['opening_hours']['weekday_text']);
+      $hours_text = implode(", ", $place_data['opening_hours']['weekday_text']);
       $populated_fields['field_opening_hours[0][value]'] = $hours_text;
+      $this->logger->debug('Opening hours field mapped: @hours', [
+        '@hours' => $hours_text,
+      ]);
+    } else {
+      $this->logger->debug('Opening hours not mapped. Has data: @has_data, Has field: @has_field', [
+        '@has_data' => !empty($place_data['opening_hours']['weekday_text']) ? 'yes' : 'no',
+        '@has_field' => $node->hasField('field_opening_hours') ? 'yes' : 'no',
+      ]);
     }
 
     $this->logger->info('Successfully populated place data for place @place_id', [
       '@place_id' => $place_id,
+    ]);
+
+    // Debug: Log all populated fields
+    $this->logger->debug('All populated fields: @fields', [
+      '@fields' => json_encode($populated_fields),
     ]);
 
     return [

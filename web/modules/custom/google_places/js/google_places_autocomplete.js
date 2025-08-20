@@ -7,32 +7,55 @@
 
   Drupal.behaviors.googlePlacesAutocomplete = {
     attach: function (context, settings) {
+      console.log('Google Places Autocomplete behavior attaching...');
       once('google-places-autocomplete', '.google-places-autocomplete', context).forEach(function(element) {
+        console.log('Found autocomplete field:', element);
         var $field = $(element);
         var autoPopulate = $field.attr('data-auto-populate') === 'true';
         
-        // Load Google Places API if not already loaded
-        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        // Check if Google Places API is available
+        if (typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.places !== 'undefined') {
+          // API already loaded, initialize directly
+          initAutocomplete(element, autoPopulate);
+        } else if (!window.googlePlacesApiLoading) {
+          // Mark that we're loading the API to prevent duplicates
+          window.googlePlacesApiLoading = true;
+          
           var apiKey = drupalSettings.googlePlaces ? drupalSettings.googlePlaces.apiKey : '';
           if (apiKey) {
-            var script = document.createElement('script');
-            script.src = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places,marker&loading=async&callback=initGooglePlacesAutocomplete';
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-            
             // Store field reference for callback
             window.googlePlacesFields = window.googlePlacesFields || [];
             window.googlePlacesFields.push({
               field: element,
               autoPopulate: autoPopulate
             });
+            
+            // Check if script already exists
+            var existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+            if (!existingScript) {
+              var script = document.createElement('script');
+              script.src = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&loading=async&callback=initGooglePlacesAutocomplete';
+              script.async = true;
+              script.defer = true;
+              script.onload = function() {
+                console.log('Google Maps API script loaded successfully');
+              };
+              script.onerror = function() {
+                console.error('Failed to load Google Maps API script');
+                window.googlePlacesApiLoading = false;
+              };
+              document.head.appendChild(script);
+            }
           } else {
             console.error('Google Places API key not configured');
           }
         } else {
-          // API already loaded, initialize directly
-          initAutocomplete(element, autoPopulate);
+          // API is currently loading, store field for later initialization
+          window.googlePlacesFields = window.googlePlacesFields || [];
+          window.googlePlacesFields.push({
+            field: element,
+            autoPopulate: autoPopulate
+          });
         }
       });
     }
@@ -40,11 +63,24 @@
 
   // Global callback for Google Maps API
   window.initGooglePlacesAutocomplete = function() {
-    if (window.googlePlacesFields) {
-      window.googlePlacesFields.forEach(function(fieldData) {
-        initAutocomplete(fieldData.field, fieldData.autoPopulate);
-      });
-      window.googlePlacesFields = [];
+    console.log('Google Maps API loaded, initializing autocomplete fields...');
+    try {
+      // Reset loading flag
+      window.googlePlacesApiLoading = false;
+      
+      if (window.googlePlacesFields) {
+        window.googlePlacesFields.forEach(function(fieldData) {
+          try {
+            initAutocomplete(fieldData.field, fieldData.autoPopulate);
+          } catch (error) {
+            console.error('Error initializing autocomplete for field:', fieldData.field, error);
+          }
+        });
+        window.googlePlacesFields = [];
+      }
+    } catch (error) {
+      console.error('Error in initGooglePlacesAutocomplete:', error);
+      window.googlePlacesApiLoading = false;
     }
   };
 
@@ -114,11 +150,22 @@
   function initLegacyAutocomplete(field, autoPopulate) {
     console.log('Initializing legacy autocomplete for field:', field);
     
-    var autocomplete = new google.maps.places.Autocomplete(field, {
-      fields: ['place_id', 'name', 'formatted_address', 'geometry', 'opening_hours', 'formatted_phone_number', 'website'],
-      types: ['establishment']
-    });
-
+    try {
+      // Small delay to ensure DOM is ready
+      setTimeout(function() {
+        var autocomplete = new google.maps.places.Autocomplete(field, {
+          fields: ['place_id', 'name', 'formatted_address', 'geometry', 'opening_hours', 'formatted_phone_number', 'website'],
+          types: ['establishment']
+        });
+        
+        setupAutocompleteListener(autocomplete, field, autoPopulate);
+      }, 100);
+    } catch (error) {
+      console.error('Error creating legacy autocomplete:', error);
+    }
+  }
+  
+  function setupAutocompleteListener(autocomplete, field, autoPopulate) {
     autocomplete.addListener('place_changed', function() {
       console.log('Legacy API: Place changed event fired');
       var place = autocomplete.getPlace();
