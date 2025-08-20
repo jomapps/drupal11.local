@@ -4,7 +4,9 @@ namespace Drupal\google_places\Service;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\node\NodeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -45,6 +47,8 @@ class GooglePlacesApiService {
    */
   protected $logger;
 
+
+
   /**
    * Google Maps API key.
    *
@@ -67,7 +71,7 @@ class GooglePlacesApiService {
     $this->logger = $logger_factory->get('google_places');
     
     // Get API key from settings
-    $this->apiKey = \Drupal::settings()->get('maps_api_key');
+    $this->apiKey = Settings::get('maps_api_key');
   }
 
   /**
