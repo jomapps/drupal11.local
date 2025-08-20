@@ -311,4 +311,134 @@ class GooglePlacesApiService {
       ]);
     }
   }
+
+  /**
+   * Populate place data from Google Places API.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The place node.
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return array
+   *   Result array with success status and populated fields.
+   */
+  public function populatePlaceData(NodeInterface $node, array &$form, FormStateInterface $form_state) {
+    $place_id = $this->getPlaceIdFromNode($node);
+    
+    if (!$place_id) {
+      return [
+        'success' => FALSE,
+        'error' => 'No Google Place ID found for this place.',
+      ];
+    }
+
+    // Get place details with additional fields
+    $place_details = $this->getPlaceDetailsForPopulation($place_id);
+    
+    if (!$place_details['success']) {
+      return $place_details;
+    }
+
+    $place_data = $place_details['data'];
+    $populated_fields = [];
+
+    // Populate title/name
+    if (!empty($place_data['name'])) {
+      $populated_fields['title[0][value]'] = $place_data['name'];
+    }
+
+    // Populate formatted address
+    if (!empty($place_data['formatted_address']) && $node->hasField('field_formatted_address')) {
+      $populated_fields['field_formatted_address[0][value]'] = $place_data['formatted_address'];
+    }
+
+    // Populate coordinates
+    if (!empty($place_data['geometry']['location'])) {
+      $lat = $place_data['geometry']['location']['lat'];
+      $lng = $place_data['geometry']['location']['lng'];
+      
+      if ($node->hasField('field_latitude')) {
+        $populated_fields['field_latitude[0][value]'] = $lat;
+      }
+      
+      if ($node->hasField('field_longitude')) {
+        $populated_fields['field_longitude[0][value]'] = $lng;
+      }
+    }
+
+    // Populate phone number
+    if (!empty($place_data['formatted_phone_number']) && $node->hasField('field_phone')) {
+      $populated_fields['field_phone[0][value]'] = $place_data['formatted_phone_number'];
+    }
+
+    // Populate website URL
+    if (!empty($place_data['website']) && $node->hasField('field_url')) {
+      $populated_fields['field_url[0][uri]'] = $place_data['website'];
+    }
+
+    // Populate opening hours
+    if (!empty($place_data['opening_hours']['weekday_text']) && $node->hasField('field_opening_hours')) {
+      $hours_text = implode("\n", $place_data['opening_hours']['weekday_text']);
+      $populated_fields['field_opening_hours[0][value]'] = $hours_text;
+    }
+
+    $this->logger->info('Successfully populated place data for place @place_id', [
+      '@place_id' => $place_id,
+    ]);
+
+    return [
+      'success' => TRUE,
+      'populated_fields' => $populated_fields,
+    ];
+  }
+
+  /**
+   * Get place details with extended fields for population.
+   *
+   * @param string $place_id
+   *   The Google Place ID.
+   *
+   * @return array
+   *   Result array with success status and data/error.
+   */
+  protected function getPlaceDetailsForPopulation($place_id) {
+    $url = 'https://maps.googleapis.com/maps/api/place/details/json';
+    
+    $params = [
+      'place_id' => $place_id,
+      'fields' => 'name,formatted_address,geometry,opening_hours,formatted_phone_number,website',
+      'language' => 'de', // German language
+      'key' => $this->apiKey,
+    ];
+
+    try {
+      $response = $this->httpClient->get($url, ['query' => $params]);
+      $data = json_decode($response->getBody()->getContents(), TRUE);
+
+      if ($data['status'] === 'OK') {
+        return [
+          'success' => TRUE,
+          'data' => $data['result'],
+        ];
+      } else {
+        $error = $data['error_message'] ?? $data['status'];
+        $this->logger->error('Google Places API error: @error', ['@error' => $error]);
+        
+        return [
+          'success' => FALSE,
+          'error' => $error,
+        ];
+      }
+    } catch (RequestException $e) {
+      $this->logger->error('HTTP request failed: @error', ['@error' => $e->getMessage()]);
+      
+      return [
+        'success' => FALSE,
+        'error' => 'Failed to connect to Google Places API: ' . $e->getMessage(),
+      ];
+    }
+  }
 }

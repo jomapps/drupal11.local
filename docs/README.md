@@ -74,6 +74,28 @@ We are investigating an issue where Google Places images are being blocked durin
    - German language formatting
    - Integration with existing field
 
+10. **[MISSING FUNCTIONALITY ANALYSIS](modules/google-places/MISSING-FUNCTIONALITY-ANALYSIS.md)** ⚠️
+    - Missing place ID autocomplete functionality
+    - Missing get details button
+    - Implementation requirements and plan
+
+11. **[FUNCTIONALITY RESTORATION SUCCESS](modules/google-places/FUNCTIONALITY-RESTORATION-SUCCESS.md)** 🎉
+    - Complete restoration of missing features
+    - Place ID autocomplete widget implementation
+    - Get details button functionality
+    - Full testing instructions and validation
+
+12. **[JAVASCRIPT ERROR FIX](modules/google-places/JAVASCRIPT-ERROR-FIX.md)** 🔧
+    - Fixed "once is not a function" error
+    - Drupal 11 compatibility updates
+    - jQuery.once() → once() API migration
+
+13. **[GOOGLE API MODERNIZATION](modules/google-places/GOOGLE-API-MODERNIZATION.md)** 🚀
+    - Fixed Google Maps API performance warnings
+    - Migrated to modern PlaceAutocompleteElement API
+    - Added loading=async optimization
+    - Backward compatibility with legacy API
+
 ## Current System Overview
 
 ### 🏗️ Environment

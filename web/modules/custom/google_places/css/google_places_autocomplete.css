@@ -1,0 +1,83 @@
+/**
+ * Google Places Autocomplete Widget Styles
+ */
+
+.google-places-autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+.google-places-autocomplete input {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  padding-right: 32px;
+}
+
+.google-places-autocomplete .pac-container {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.google-places-autocomplete .pac-item {
+  padding: 10px;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+}
+
+.google-places-autocomplete .pac-item:hover {
+  background-color: #f8f9fa;
+}
+
+.google-places-autocomplete .pac-item-selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.google-places-autocomplete .pac-matched {
+  font-weight: bold;
+}
+
+/* Form integration styles */
+.field--widget-google-places-autocomplete .form-item {
+  position: relative;
+}
+
+.field--widget-google-places-autocomplete .description {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Modern PlaceAutocompleteElement styles */
+gmp-place-autocomplete {
+  width: 100%;
+  display: block;
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background-color: white;
+}
+
+gmp-place-autocomplete:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Legacy autocomplete compatibility */
+.google-places-autocomplete.legacy-mode {
+  display: block !important;
+}
+
+/* Modern API transition styles */
+.google-places-autocomplete.modern-mode {
+  display: none;
+}

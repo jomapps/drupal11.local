@@ -9,3 +9,17 @@ google_places:
     - core/jquery
     - core/drupal
     - core/drupalSettings
+    - core/once
+
+google_places_autocomplete:
+  version: 1.x
+  css:
+    theme:
+      css/google_places_autocomplete.css: {}
+  js:
+    js/google_places_autocomplete.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/once
