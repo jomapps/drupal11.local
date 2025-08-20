@@ -571,18 +571,25 @@ class GooglePlacesApiService {
   protected function populateEntityReferenceFields(array $place_data, array &$populated_fields, NodeInterface $node) {
     $messages = [];
 
-    // Populate Region field
+    // Populate Region field (Autocomplete)
     if ($node->hasField('field_region')) {
       $region_info = $this->getRegionInfo($place_data);
       if ($region_info['term_id']) {
-        $populated_fields['field_region[0][target_id]'] = $region_info['term_id'];
+        // For entity reference autocomplete fields, use the format "Term Name (Term ID)"
+        $display_value = $region_info['name'] . ' (' . $region_info['term_id'] . ')';
+        $populated_fields['field_region[0][target_id]'] = $display_value;
+        
         $this->logger->debug('Region field mapped to term ID: @term_id (@name)', [
           '@term_id' => $region_info['term_id'],
           '@name' => $region_info['name'],
         ]);
       } else {
         $region_name = $region_info['name'] ?: 'Unknown';
-        $messages[] = "Region '$region_name' was not found in the system. Please select the region manually.";
+        if ($region_name && $region_name !== 'Unknown') {
+          $messages[] = "Region '{$region_name}' not found in system. Please create '{$region_name}' taxonomy term or select existing region manually.";
+        } else {
+          $messages[] = "No region information found in place data. Please select the region manually.";
+        }
         $this->logger->info('Region not found: @region. Available regions need to be manually managed.', [
           '@region' => $region_name,
         ]);
