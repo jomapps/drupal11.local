@@ -69,6 +69,11 @@ We are investigating an issue where Google Places images are being blocked durin
    - Consistent testing protocol
    - API verification and commands
 
+9. **[OPENING HOURS IMPORT](modules/google-places/OPENING-HOURS-IMPORT.md)** 🕒
+   - Automatic opening hours import
+   - German language formatting
+   - Integration with existing field
+
 ## Current System Overview
 
 ### 🏗️ Environment

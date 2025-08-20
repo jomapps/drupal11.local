@@ -69,7 +69,7 @@ function google_places_get_image_ajax(array &$form, FormStateInterface $form_sta
     $result = $google_places_service->fetchPlaceImage($node);
     
     if ($result['success']) {
-      $message = t('Image successfully downloaded and saved.');
+      $message = t('Image successfully downloaded and saved. Opening hours have been imported.');
       $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
         '<div class="messages messages--status">' . $message . '</div>'));
     } else {

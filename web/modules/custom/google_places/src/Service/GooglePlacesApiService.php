@@ -91,12 +91,15 @@ class GooglePlacesApiService {
         ];
       }
 
-      // Get place details with photos
+      // Get place details with photos and opening hours
       $place_details = $this->getPlaceDetails($place_id);
       
       if (!$place_details['success']) {
         return $place_details;
       }
+
+      // Import opening hours if available
+      $this->importOpeningHours($node, $place_details['data']);
 
       $photos = $place_details['data']['photos'] ?? [];
       if (empty($photos)) {
@@ -174,7 +177,7 @@ class GooglePlacesApiService {
     
     $params = [
       'place_id' => $place_id,
-      'fields' => 'name,formatted_address,photos',
+      'fields' => 'name,formatted_address,photos,opening_hours',
       'language' => 'de', // German language
       'key' => $this->apiKey,
     ];
@@ -271,6 +274,41 @@ class GooglePlacesApiService {
         'success' => FALSE,
         'error' => 'Failed to download image: ' . $e->getMessage(),
       ];
+    }
+  }
+
+  /**
+   * Import opening hours from Google Places data into node.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The place node.
+   * @param array $place_data
+   *   The place data from Google Places API.
+   */
+  protected function importOpeningHours(NodeInterface $node, array $place_data) {
+    if (!$node->hasField('field_opening_hours') || empty($place_data['opening_hours'])) {
+      return;
+    }
+
+    $opening_hours = $place_data['opening_hours'];
+    
+    // Use the German weekday_text format which is more readable
+    if (!empty($opening_hours['weekday_text'])) {
+      $hours_text = implode("\n", $opening_hours['weekday_text']);
+      
+      // Set the opening hours field
+      $node->set('field_opening_hours', [
+        'value' => $hours_text,
+        'format' => 'basic_html', // Assuming basic_html format
+      ]);
+      
+      // Save the node
+      $node->save();
+      
+      $this->logger->info('Successfully imported opening hours for place @place_id: @hours', [
+        '@place_id' => $this->getPlaceIdFromNode($node),
+        '@hours' => $hours_text,
+      ]);
     }
   }
 }
