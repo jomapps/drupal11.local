@@ -102,8 +102,7 @@ class GooglePlacesAutocompleteWidget extends WidgetBase {
    *   The API key or NULL if not configured.
    */
   protected function getApiKey() {
-    $settings = \Drupal::service('settings');
-    return $settings->get('maps_api_key');
+    return \Drupal\Core\Site\Settings::get('maps_api_key');
   }
 
 }

@@ -132,6 +132,103 @@ class GooglePlacesApiService {
   }
 
   /**
+   * Get Google Place ID from form state or node.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return string|null
+   *   The place ID or NULL if not found.
+   */
+  protected function getPlaceIdFromFormOrNode(NodeInterface $node, FormStateInterface $form_state) {
+    // First, try to get place ID from form values (current user input)
+    $form_values = $form_state->getValues();
+    $place_id_fields = ['field_google_place_id', 'field_place_id', 'title'];
+    
+    $this->logger->debug('Searching for Place ID in form values. Available fields: @fields', [
+      '@fields' => implode(', ', array_keys($form_values)),
+    ]);
+    
+    // Debug: Log all form values to see what we actually have
+    foreach ($form_values as $field_name => $field_value) {
+      if (is_string($field_value) && !empty($field_value)) {
+        $this->logger->debug('Form field @field has string value: @value', [
+          '@field' => $field_name,
+          '@value' => $field_value,
+        ]);
+        
+        // Check if this string value is a Place ID
+        if (strpos($field_value, 'ChIJ') === 0) {
+          $this->logger->info('Found Place ID in form field @field: @place_id', [
+            '@field' => $field_name,
+            '@place_id' => $field_value,
+          ]);
+          return $field_value;
+        }
+      } elseif (is_array($field_value) && isset($field_value[0]['value']) && !empty($field_value[0]['value'])) {
+        $this->logger->debug('Form field @field has array value: @value', [
+          '@field' => $field_name,
+          '@value' => $field_value[0]['value'],
+        ]);
+        
+        // Check if this array value is a Place ID
+        $value = $field_value[0]['value'];
+        if (is_string($value) && strpos($value, 'ChIJ') === 0) {
+          $this->logger->info('Found Place ID in form field @field: @place_id', [
+            '@field' => $field_name,
+            '@place_id' => $value,
+          ]);
+          return $value;
+        }
+      }
+    }
+    
+    // Original logic as fallback for specific fields
+    foreach ($place_id_fields as $field_name) {
+      if (isset($form_values[$field_name])) {
+        $field_value = $form_values[$field_name];
+        
+        // Handle different field value structures
+        $value = null;
+        if (is_array($field_value) && isset($field_value[0]['value'])) {
+          $value = $field_value[0]['value'];
+        } elseif (is_string($field_value)) {
+          $value = $field_value;
+        }
+        
+        // Ensure value is a string before using strpos
+        if (is_array($value)) {
+          $this->logger->debug('Field @field value is still an array, skipping: @value', [
+            '@field' => $field_name,
+            '@value' => json_encode($value),
+          ]);
+          continue;
+        }
+        
+        $this->logger->debug('Checking specific field @field with value: @value', [
+          '@field' => $field_name,
+          '@value' => $value,
+        ]);
+        
+        // Check if this looks like a Google Place ID (starts with ChIJ)
+        if ($value && is_string($value) && strpos($value, 'ChIJ') === 0) {
+          $this->logger->info('Found Place ID in specific field @field: @place_id', [
+            '@field' => $field_name,
+            '@place_id' => $value,
+          ]);
+          return $value;
+        }
+      }
+    }
+    
+    // If not found in form, fallback to node values
+    $this->logger->debug('No Place ID found in form values, checking node values');
+    return $this->getPlaceIdFromNode($node);
+  }
+
+  /**
    * Get Google Place ID from node.
    *
    * @param \Drupal\node\NodeInterface $node
@@ -330,7 +427,7 @@ class GooglePlacesApiService {
    *   Result array with success status and populated fields.
    */
   public function populatePlaceData(NodeInterface $node, array &$form, FormStateInterface $form_state) {
-    $place_id = $this->getPlaceIdFromNode($node);
+    $place_id = $this->getPlaceIdFromFormOrNode($node, $form_state);
     
     if (!$place_id) {
       return [

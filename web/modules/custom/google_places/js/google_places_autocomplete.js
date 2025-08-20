@@ -52,14 +52,13 @@
    * Initialize autocomplete for a field
    */
   function initAutocomplete(field, autoPopulate) {
-    // Check if new PlaceAutocompleteElement is available
-    if (typeof google.maps.places.PlaceAutocompleteElement !== 'undefined') {
-      // Use the new PlaceAutocompleteElement API
-      initModernAutocomplete(field, autoPopulate);
-    } else if (typeof google.maps.places.Autocomplete !== 'undefined') {
-      // Fallback to legacy Autocomplete API with deprecation warning
-      console.warn('Using deprecated google.maps.places.Autocomplete. Consider migrating to PlaceAutocompleteElement.');
+    // Force use of Legacy API for now as Modern API has issues
+    if (typeof google.maps.places.Autocomplete !== 'undefined') {
+      console.log('Using Legacy Autocomplete API (forced)');
       initLegacyAutocomplete(field, autoPopulate);
+    } else if (typeof google.maps.places.PlaceAutocompleteElement !== 'undefined') {
+      console.log('Fallback to Modern API');
+      initModernAutocomplete(field, autoPopulate);
     } else {
       console.error('No Google Places Autocomplete API available');
     }
@@ -69,6 +68,8 @@
    * Initialize modern PlaceAutocompleteElement
    */
   function initModernAutocomplete(field, autoPopulate) {
+    console.log('Initializing modern autocomplete for field:', field);
+    
     // Create a custom element for the new API
     var autocompleteElement = document.createElement('gmp-place-autocomplete');
     autocompleteElement.setAttribute('type', 'establishment');
@@ -79,14 +80,21 @@
     
     // Listen for place selection
     autocompleteElement.addEventListener('gmp-placeselect', function(event) {
+      console.log('Modern API: Place selected event fired', event);
       var place = event.place;
       
+      console.log('Modern API: Place object:', place);
+      
       if (!place.id) {
+        console.error('Modern API: No place.id found in place object');
         return;
       }
 
       // Set the place ID in the original field
       $(field).val(place.id).show().focus().blur();
+      
+      // Debug: Log what we're setting
+      console.log('Modern API: Setting Place ID', place.id, 'in field', field);
 
       // Auto-populate other fields if enabled
       if (autoPopulate) {
@@ -96,26 +104,37 @@
       // Trigger change event
       $(field).trigger('change');
     });
+    
+    console.log('Modern API: Event listener attached to autocomplete element');
   }
 
   /**
    * Initialize legacy Autocomplete (fallback)
    */
   function initLegacyAutocomplete(field, autoPopulate) {
+    console.log('Initializing legacy autocomplete for field:', field);
+    
     var autocomplete = new google.maps.places.Autocomplete(field, {
       fields: ['place_id', 'name', 'formatted_address', 'geometry', 'opening_hours', 'formatted_phone_number', 'website'],
       types: ['establishment']
     });
 
     autocomplete.addListener('place_changed', function() {
+      console.log('Legacy API: Place changed event fired');
       var place = autocomplete.getPlace();
       
+      console.log('Legacy API: Place object:', place);
+      
       if (!place.place_id) {
+        console.error('Legacy API: No place_id found in place object');
         return;
       }
 
       // Set the place ID in the field
       $(field).val(place.place_id);
+      
+      // Debug: Log what we're setting
+      console.log('Legacy API: Setting Place ID', place.place_id, 'in field', field);
 
       // Auto-populate other fields if enabled
       if (autoPopulate) {
@@ -125,6 +144,8 @@
       // Trigger change event
       $(field).trigger('change');
     });
+    
+    console.log('Legacy API: Event listener attached to autocomplete');
   }
 
   /**
