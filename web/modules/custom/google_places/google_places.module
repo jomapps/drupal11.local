@@ -72,7 +72,7 @@ function google_places_get_details_ajax(array &$form, FormStateInterface $form_s
   
   try {
     $node = $form_state->getFormObject()->getEntity();
-    $google_places_service = \Drupal::service('google_places.api');
+    $google_places_service = \Drupal::service('google_places.api_service');
     
     // Get place details and populate form
     $result = $google_places_service->populatePlaceData($node, $form, $form_state);
@@ -112,7 +112,7 @@ function google_places_get_image_ajax(array &$form, FormStateInterface $form_sta
   
   try {
     // Get Google Places service
-    $google_places_service = \Drupal::service('google_places.api');
+    $google_places_service = \Drupal::service('google_places.api_service');
     
     // Attempt to fetch image for this place
     $result = $google_places_service->fetchPlaceImage($node);
