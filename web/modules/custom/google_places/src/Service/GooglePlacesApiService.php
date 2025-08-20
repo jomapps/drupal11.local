@@ -449,6 +449,14 @@ class GooglePlacesApiService {
     // Populate title/name
     if (!empty($place_data['name'])) {
       $populated_fields['title[0][value]'] = $place_data['name'];
+      
+      // Populate company field with same value as title
+      if ($node->hasField('field_company')) {
+        $populated_fields['field_company[0][value]'] = $place_data['name'];
+        $this->logger->debug('Company field mapped: @company', [
+          '@company' => $place_data['name'],
+        ]);
+      }
     }
 
     // Populate formatted address
