@@ -496,6 +496,15 @@ class GooglePlacesApiService {
     // Populate website URL
     if (!empty($place_data['website']) && $node->hasField('field_url')) {
       $populated_fields['field_url[0][uri]'] = $place_data['website'];
+      
+      // Format the link title based on domain logic
+      $link_title = $this->formatDomainForLinkTitle($place_data['website']);
+      $populated_fields['field_url[0][title]'] = $link_title;
+      
+      $this->logger->debug('URL field mapped: @url with title: @title', [
+        '@url' => $place_data['website'],
+        '@title' => $link_title,
+      ]);
     }
 
     // Populate opening hours
@@ -525,6 +534,45 @@ class GooglePlacesApiService {
       'success' => TRUE,
       'populated_fields' => $populated_fields,
     ];
+  }
+
+  /**
+   * Format domain for link title based on subdomain logic.
+   *
+   * @param string $url
+   *   The full URL.
+   *
+   * @return string
+   *   Formatted domain for link title.
+   */
+  protected function formatDomainForLinkTitle($url) {
+    // Parse the URL to get the host
+    $parsed_url = parse_url($url);
+    if (!isset($parsed_url['host'])) {
+      return $url; // Return original if parsing fails
+    }
+    
+    $host = $parsed_url['host'];
+    
+    // Split the host into parts
+    $host_parts = explode('.', $host);
+    
+    // Need at least 2 parts for a valid domain (e.g., example.com)
+    if (count($host_parts) < 2) {
+      return $host;
+    }
+    
+    // Check if there's a subdomain (more than 2 parts, or first part is not 'www')
+    if (count($host_parts) > 2) {
+      // Has subdomain - use as is
+      return $host;
+    } elseif (count($host_parts) == 2) {
+      // No subdomain - add www
+      return 'www.' . $host;
+    } else {
+      // Fallback
+      return $host;
+    }
   }
 
   /**
