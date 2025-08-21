@@ -1,0 +1,39 @@
+uuid: fa452c91-a5fe-4f7c-9da0-531a0871bc43
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.media_library
+    - field.field.media.twitter.field_author
+    - field.field.media.twitter.field_content
+    - field.field.media.twitter.field_url
+    - image.style.media_library
+    - media.type.twitter
+  module:
+    - image
+_core:
+  default_config_hash: o1cTKltUr3FptP_bBGKY_jF35mDgxyX6y7u1FWr8x38
+id: media.twitter.media_library
+targetEntityType: media
+bundle: twitter
+mode: media_library
+content:
+  thumbnail:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: media_library
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  field_author: true
+  field_content: true
+  field_url: true
+  langcode: true
+  name: true
+  uid: true

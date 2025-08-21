@@ -1,0 +1,11 @@
+uuid: 5af3b261-cb4a-4bfd-ad70-b577fdb2faff
+langcode: de
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.place_types
+id: taxonomy_term.place_types
+target_entity_type_id: taxonomy_term
+target_bundle: place_types
+default_langcode: site_default
+language_alterable: false

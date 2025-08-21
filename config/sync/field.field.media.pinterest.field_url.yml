@@ -1,0 +1,21 @@
+uuid: e56629e4-0276-493c-ada4-1f037d86d685
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_url
+    - media.type.pinterest
+_core:
+  default_config_hash: RUxPrkOVJIjDQgPrfVlVOFkKQR1JtZOLmYYselxKk8c
+id: media.pinterest.field_url
+field_name: field_url
+entity_type: media
+bundle: pinterest
+label: 'Pinterest url'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

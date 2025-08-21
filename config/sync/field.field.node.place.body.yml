@@ -1,0 +1,24 @@
+uuid: 44872103-e54c-4586-b422-d40d1f53245d
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.place
+  module:
+    - text
+id: node.place.body
+field_name: body
+entity_type: node
+bundle: place
+label: Beschreibung
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

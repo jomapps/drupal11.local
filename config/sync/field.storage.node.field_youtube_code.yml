@@ -1,0 +1,21 @@
+uuid: efe0f5c0-a335-43d6-8609-0d4f2f31a915
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_youtube_code
+field_name: field_youtube_code
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

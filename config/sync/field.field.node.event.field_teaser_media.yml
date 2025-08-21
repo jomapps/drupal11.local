@@ -1,0 +1,27 @@
+uuid: 3800ca15-e76c-4b1c-8b9c-25f317c02fbf
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_teaser_media
+    - media.type.image
+    - node.type.event
+id: node.event.field_teaser_media
+field_name: field_teaser_media
+entity_type: node
+bundle: event
+label: Vorschaubild
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: name
+      direction: asc
+field_type: entity_reference

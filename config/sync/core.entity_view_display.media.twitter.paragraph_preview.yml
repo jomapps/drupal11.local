@@ -1,0 +1,105 @@
+uuid: 6beac583-4be5-4fa1-9178-9a07ba342a35
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.paragraph_preview
+    - field.field.media.twitter.field_author
+    - field.field.media.twitter.field_content
+    - field.field.media.twitter.field_url
+    - image.style.thumbnail
+    - media.type.twitter
+  module:
+    - empty_fields
+    - field_group
+    - image
+third_party_settings:
+  field_group:
+    group_left:
+      children:
+        - thumbnail
+      label: Left
+      parent_name: ''
+      region: content
+      weight: 0
+      format_type: html_element
+      format_settings:
+        classes: group-left
+        show_empty_fields: false
+        id: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+    group_right:
+      children:
+        - field_url
+        - field_author
+        - field_content
+      label: Right
+      parent_name: ''
+      region: content
+      weight: 2
+      format_type: html_element
+      format_settings:
+        classes: group-right
+        show_empty_fields: false
+        id: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+_core:
+  default_config_hash: TpGPQqkqShXq4ORcJVhKUsv4B-bAESnp76GFkSjcZ9Q
+id: media.twitter.paragraph_preview
+targetEntityType: media
+bundle: twitter
+mode: paragraph_preview
+content:
+  field_author:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_content:
+    type: basic_string
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_url:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  thumbnail:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: thumbnail
+      image_loading:
+        attribute: lazy
+    third_party_settings:
+      empty_fields:
+        handler: ''
+    weight: 1
+    region: content
+hidden:
+  created: true
+  langcode: true
+  name: true
+  uid: true

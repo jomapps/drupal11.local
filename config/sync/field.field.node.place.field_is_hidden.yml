@@ -1,0 +1,21 @@
+uuid: 72f116df-1e75-45cf-b67d-154843bf99a4
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_is_hidden
+    - node.type.place
+id: node.place.field_is_hidden
+field_name: field_is_hidden
+entity_type: node
+bundle: place
+label: 'In Liste ausblenden'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,12 @@
+uuid: 68de60cb-93df-4053-814e-439da3475a50
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ft-OB7bf-6J5fng-Xs9PDXpqIpcpnDd5GZl9ssIbFVA
+id: image
+label: Image
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

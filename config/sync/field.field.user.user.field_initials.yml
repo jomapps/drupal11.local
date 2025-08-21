@@ -1,0 +1,20 @@
+uuid: 3fd1da96-c487-4b43-894d-6bef83d25d4b
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_initials
+  module:
+    - user
+id: user.user.field_initials
+field_name: field_initials
+entity_type: user
+bundle: user
+label: Initials
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -8,8 +8,8 @@ set -e  # Exit on any error
 
 # Configuration
 ENVIRONMENT=${1:-production}
-SITE_PATH="/path/to/your/drupal/site"
-BACKUP_PATH="/path/to/backups"
+SITE_PATH="$(pwd)"
+BACKUP_PATH="$SITE_PATH/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
 
 # Colors for output
@@ -49,7 +49,7 @@ fi
 
 # 2. Put site in maintenance mode
 log_info "Enabling maintenance mode..."
-drush state:set system.maintenance_mode 1 --input-format=integer
+./vendor/bin/drush state:set system.maintenance_mode 1 --input-format=integer
 
 # 3. Pull latest code
 log_info "Pulling latest code from repository..."
@@ -61,23 +61,23 @@ composer install --no-dev --optimize-autoloader
 
 # 5. Run database updates
 log_info "Running database updates..."
-drush updatedb -y
+./vendor/bin/drush updatedb -y
 
 # 6. Import configuration
 log_info "Importing configuration..."
-drush config:import -y
+./vendor/bin/drush config:import -y
 
 # 7. Clear all caches
 log_info "Clearing caches..."
-drush cache:rebuild
+./vendor/bin/drush cache:rebuild
 
 # 8. Disable maintenance mode
 log_info "Disabling maintenance mode..."
-drush state:set system.maintenance_mode 0 --input-format=integer
+./vendor/bin/drush state:set system.maintenance_mode 0 --input-format=integer
 
 # 9. Final cache clear
 log_info "Final cache clear..."
-drush cache:rebuild
+./vendor/bin/drush cache:rebuild
 
 log_info "Deployment completed successfully!"
 

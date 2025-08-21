@@ -1,0 +1,27 @@
+uuid: d207fb11-e27c-446a-aac0-90a05f4f1a71
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.image.field_image
+    - paragraphs.paragraphs_type.image
+_core:
+  default_config_hash: MXZf_hCBJTLT3VbLfmuBFuYOWq1rWrkHWBvoH2Ceiuc
+id: paragraph.image.preview
+targetEntityType: paragraph
+bundle: image
+mode: preview
+content:
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: paragraph_preview
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  uid: true

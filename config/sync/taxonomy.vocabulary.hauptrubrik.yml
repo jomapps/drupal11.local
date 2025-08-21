@@ -1,0 +1,25 @@
+uuid: 2c68a0d0-d1f1-4a8f-b1a3-e95270313906
+langcode: de
+status: true
+dependencies:
+  module:
+    - scheduler
+third_party_settings:
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: vertical_tab
+    publish_enable: false
+    publish_past_date: error
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: true
+    unpublish_enable: false
+    unpublish_required: false
+    unpublish_revision: false
+name: Hauptrubrik
+vid: hauptrubrik
+description: null
+weight: 0
+new_revision: false

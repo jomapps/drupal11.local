@@ -1,0 +1,21 @@
+uuid: 06a8de68-c8d3-4245-bf30-448934f9dbd2
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_abo_period
+    - node.type.place
+  module:
+    - datetime_range
+id: node.place.field_abo_period
+field_name: field_abo_period
+entity_type: node
+bundle: place
+label: 'Abo Zeitraum'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: daterange

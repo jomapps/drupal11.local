@@ -1,0 +1,13 @@
+uuid: 67f633f6-0729-436a-adb9-f77bc1024115
+langcode: en
+status: true
+dependencies:
+  config:
+    - simple_sitemap.type.default_hreflang
+_core:
+  default_config_hash: TVX_tVknieo4_aaKQaRysdp3ragx8rmfTcubSB3alY8
+id: basic
+label: Basic
+description: ''
+type: default_hreflang
+weight: -9

@@ -1,0 +1,21 @@
+uuid: 871d1f79-bc74-44e6-b7d0-e328c4eabc7d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_source
+    - media.type.image
+_core:
+  default_config_hash: A0nMkKfUVNiC_TgThw1sOiLHsEqP6UMfxmiVUeyPgZc
+id: media.image.field_source
+field_name: field_source
+entity_type: media
+bundle: image
+label: Source
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

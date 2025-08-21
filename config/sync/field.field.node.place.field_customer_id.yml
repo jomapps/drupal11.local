@@ -1,0 +1,19 @@
+uuid: 773851d2-fcb9-4db0-bcd4-ee3ed8ab5f61
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_customer_id
+    - node.type.place
+id: node.place.field_customer_id
+field_name: field_customer_id
+entity_type: node
+bundle: place
+label: Kundennummer
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

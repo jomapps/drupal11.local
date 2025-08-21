@@ -1,0 +1,19 @@
+uuid: e3c6c877-7811-44a2-9e24-67dd3bf28500
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_opening_hours
+    - node.type.place
+id: node.place.field_opening_hours
+field_name: field_opening_hours
+entity_type: node
+bundle: place
+label: Öffnungszeiten
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

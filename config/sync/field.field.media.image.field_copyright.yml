@@ -1,0 +1,21 @@
+uuid: 152d3d5b-40b5-40a2-b3a7-16f1179c8104
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_copyright
+    - media.type.image
+_core:
+  default_config_hash: RCUVCaAnGnkNcphMzGWPLBpkPlGeZy4wYlDdGfiRSt0
+id: media.image.field_copyright
+field_name: field_copyright
+entity_type: media
+bundle: image
+label: Copyright
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

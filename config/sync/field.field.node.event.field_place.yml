@@ -1,0 +1,27 @@
+uuid: 7cdfcdb0-bbee-4d8a-94b8-c92991b14947
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_place
+    - node.type.event
+    - node.type.place
+id: node.event.field_place
+field_name: field_place
+entity_type: node
+bundle: event
+label: Ort
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      place: place
+    sort:
+      field: title
+      direction: asc
+field_type: entity_reference

@@ -1,0 +1,21 @@
+uuid: 31c8a586-80d7-47bb-bb8f-12922d7b7639
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_in_slider_frontpage
+    - node.type.article
+id: node.article.field_in_slider_frontpage
+field_name: field_in_slider_frontpage
+entity_type: node
+bundle: article
+label: 'Im Slider auf Startseite anzeigen'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

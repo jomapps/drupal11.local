@@ -1,0 +1,9 @@
+uuid: 16f08d35-40e1-4e4a-984a-5d0434ced3d0
+langcode: de
+status: true
+dependencies: {  }
+id: places_admin
+label: 'Places Admin'
+weight: 0
+is_admin: false
+permissions: {  }

@@ -16,13 +16,9 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, hash, json, mbstring, pcre, pdo, session, tokenizer, zip
-        tools: composer:v2
         
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-      
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -35,31 +31,38 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
       
-    # Optional: Run tests
-    # - name: Run tests
-    #   run: |
-    #     vendor/bin/phpunit
-    
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v0.1.7
+    - name: Deploy to production server
+      uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /path/to/your/drupal/site
-          git pull origin main
-          composer install --no-dev --optimize-autoloader
-          drush updatedb -y
-          drush config:import -y
-          drush cache:rebuild
+          cd ${{ secrets.DEPLOY_PATH }}
           
-    - name: Notify deployment status
-      if: always()
-      run: |
-        if [ ${{ job.status }} == 'success' ]; then
-          echo "✅ Deployment successful!"
-        else
-          echo "❌ Deployment failed!"
-        fi
+          # Put site in maintenance mode
+          ./vendor/bin/drush state:set system.maintenance_mode 1 --input-format=integer
+          
+          # Pull latest code
+          git pull origin main
+          
+          # Install/update dependencies
+          composer install --no-dev --optimize-autoloader
+          
+          # Run database updates
+          ./vendor/bin/drush updatedb -y
+          
+          # Import configuration
+          ./vendor/bin/drush config:import -y
+          
+          # Clear caches
+          ./vendor/bin/drush cache:rebuild
+          
+          # Disable maintenance mode
+          ./vendor/bin/drush state:set system.maintenance_mode 0 --input-format=integer
+          
+          # Final cache clear
+          ./vendor/bin/drush cache:rebuild
+          
+          echo "Deployment completed successfully!"

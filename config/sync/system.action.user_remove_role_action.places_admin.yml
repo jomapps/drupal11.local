@@ -1,0 +1,14 @@
+uuid: 76937217-6da4-4fe7-8b4c-47e6de4137e9
+langcode: de
+status: true
+dependencies:
+  config:
+    - user.role.places_admin
+  module:
+    - user
+id: user_remove_role_action.places_admin
+label: 'Remove the Places Admin role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: places_admin

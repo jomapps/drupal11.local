@@ -1,0 +1,29 @@
+uuid: 2f1bdaaf-51e8-4169-97a1-b8eb26e3c810
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_place_type
+    - node.type.place
+    - taxonomy.vocabulary.place_types
+id: node.place.field_place_type
+field_name: field_place_type
+entity_type: node
+bundle: place
+label: Kategorie
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      place_types: place_types
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

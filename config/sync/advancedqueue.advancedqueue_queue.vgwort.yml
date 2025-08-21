@@ -1,0 +1,22 @@
+uuid: be5fe462-477e-4da1-9508-2cc74d96467d
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - vgwort
+_core:
+  default_config_hash: 147VHIKXb6rGHq8lBOipdFutuxik-cFbqnV4twyjv9Q
+id: vgwort
+label: 'VG Wort'
+backend: database
+backend_configuration:
+  lease_time: 300
+processor: daemon
+processing_time: 90
+threshold:
+  type: 0
+  limit: 0
+  state: all
+locked: false
+stop_when_empty: true

@@ -1,0 +1,19 @@
+uuid: 134d0591-3888-4742-bee7-39918fbe9add
+langcode: de
+status: true
+dependencies:
+  module:
+    - user
+    - vgwort
+id: user.field_vg_wort
+field_name: field_vg_wort
+entity_type: user
+type: vgwort_participant_info
+settings: {  }
+module: vgwort
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

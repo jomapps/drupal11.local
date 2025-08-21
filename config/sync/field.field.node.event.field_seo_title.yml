@@ -1,0 +1,19 @@
+uuid: 0df4c329-7d50-4a93-bce5-8b3a3ab96b2d
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seo_title
+    - node.type.event
+id: node.event.field_seo_title
+field_name: field_seo_title
+entity_type: node
+bundle: event
+label: 'SEO Titel'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,62 @@
+uuid: dd93fc12-c5bf-4796-a9fe-859166cef0ee
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_address
+    - node.type.place
+  module:
+    - address
+id: node.place.field_address
+field_name: field_address
+entity_type: node
+bundle: place
+label: Addresse
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    langcode: null
+    country_code: DE
+    administrative_area: null
+    locality: ''
+    dependent_locality: null
+    postal_code: ''
+    sorting_code: null
+    address_line1: ''
+    address_line2: ''
+    address_line3: ''
+    organization: ''
+    given_name: null
+    additional_name: null
+    family_name: null
+default_value_callback: ''
+settings:
+  available_countries: {  }
+  langcode_override: ''
+  field_overrides:
+    givenName:
+      override: hidden
+    additionalName:
+      override: hidden
+    familyName:
+      override: hidden
+    organization:
+      override: optional
+    addressLine1:
+      override: optional
+    addressLine2:
+      override: optional
+    addressLine3:
+      override: optional
+    postalCode:
+      override: optional
+    dependentLocality:
+      override: optional
+    locality:
+      override: optional
+    administrativeArea:
+      override: optional
+  fields: {  }
+field_type: address

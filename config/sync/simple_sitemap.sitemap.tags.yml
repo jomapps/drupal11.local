@@ -1,0 +1,13 @@
+uuid: 8c1e5204-cc5c-499b-991c-39217609977e
+langcode: en
+status: true
+dependencies:
+  config:
+    - simple_sitemap.type.default_hreflang
+_core:
+  default_config_hash: d_cWTiGsCHHAOeDpRqN3Hs9gC-pgAAQjSeX-X-Ei8ok
+id: tags
+label: Tags
+description: null
+type: default_hreflang
+weight: -7

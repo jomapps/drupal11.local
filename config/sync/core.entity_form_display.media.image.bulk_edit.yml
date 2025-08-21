@@ -1,0 +1,81 @@
+uuid: bf46ac8b-278e-479a-8e0f-6fb4877d2c66
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.media.bulk_edit
+    - field.field.media.image.field_copyright
+    - field.field.media.image.field_description
+    - field.field.media.image.field_expires
+    - field.field.media.image.field_image
+    - field.field.media.image.field_source
+    - field.field.media.image.field_tags
+    - media.type.image
+  module:
+    - datetime
+    - tagify
+    - text
+_core:
+  default_config_hash: BJQflcXfi_OF5OFwnAi_Aod3bwQo6LebxIwcwTfrwws
+id: media.image.bulk_edit
+targetEntityType: media
+bundle: image
+mode: bulk_edit
+content:
+  field_copyright:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_description:
+    type: text_textarea
+    weight: 0
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_expires:
+    type: datetime_default
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_source:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_tags:
+    type: tagify_entity_reference_autocomplete_widget
+    weight: 4
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      placeholder: ''
+      suggestions_dropdown: 1
+      show_entity_id: 0
+      show_info_label: 0
+      info_label: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  field_image: true
+  langcode: true
+  moderation_state: true
+  name: true
+  path: true
+  publish_on: true
+  publish_state: true
+  scheduler_settings: true
+  status: true
+  uid: true
+  unpublish_on: true
+  unpublish_state: true

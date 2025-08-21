@@ -1,0 +1,14 @@
+uuid: 0108a2c2-df15-4392-9739-5c1d7a03fe90
+langcode: de
+status: true
+dependencies:
+  config:
+    - user.role.places_admin
+  module:
+    - user
+id: user_add_role_action.places_admin
+label: 'Add the Places Admin role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: places_admin

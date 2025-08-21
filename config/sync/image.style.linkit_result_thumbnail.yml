@@ -1,0 +1,23 @@
+uuid: 554e9ee6-a0ba-4096-ad9b-221e1088ded0
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 5pUw9fhwBbRsBNhkPdjkZBF7iSatRktDGAYqZb8HmNA
+name: linkit_result_thumbnail
+label: 'Linkit result thumbnail'
+effects:
+  2943df29-38ea-459c-ba1d-290489bb1807:
+    uuid: 2943df29-38ea-459c-ba1d-290489bb1807
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 50
+      height: 50
+      anchor: center-center
+  451bc36f-b256-43cc-adb5-4f3151fd892d:
+    uuid: 451bc36f-b256-43cc-adb5-4f3151fd892d
+    id: image_convert
+    weight: 2
+    data:
+      extension: webp

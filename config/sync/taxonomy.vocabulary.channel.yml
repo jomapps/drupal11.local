@@ -1,0 +1,11 @@
+uuid: cdc182be-5c81-4513-a661-1593c2535b17
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: jkSpDRQbeRmVYSQXd5F5a3ic2wv4iTC5XDi3R1LavSE
+name: Channel
+vid: channel
+description: null
+weight: 0
+new_revision: false

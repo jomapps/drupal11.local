@@ -1,0 +1,31 @@
+uuid: 04e2481b-5680-484b-9bdd-fe0b8a1867e9
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+    - scheduler
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: vertical_tab
+    publish_enable: true
+    publish_past_date: schedule
+    publish_required: false
+    publish_revision: false
+    publish_touch: true
+    unpublish_enable: true
+    unpublish_required: false
+    unpublish_revision: false
+_core:
+  default_config_hash: MOO7cpVNfAiGjt_jTSGrF4FL4KLHzL2-Y0_qR5BCBRQ
+name: Article
+type: article
+description: 'Use <em>articles</em> for evergreen content.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: true

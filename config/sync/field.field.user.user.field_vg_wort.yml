@@ -1,0 +1,22 @@
+uuid: 00ad3663-6e1c-424c-9dba-f23c72a861cd
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_vg_wort
+  module:
+    - user
+    - vgwort
+id: user.user.field_vg_wort
+field_name: field_vg_wort
+entity_type: user
+bundle: user
+label: 'VG Wort'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  involvement: AUTHOR
+field_type: vgwort_participant_info

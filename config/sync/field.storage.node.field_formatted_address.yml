@@ -1,0 +1,19 @@
+uuid: 2c32ba6b-85dc-4822-a112-ab7ecd897d05
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_formatted_address
+field_name: field_formatted_address
+entity_type: node
+type: string_long
+settings:
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
