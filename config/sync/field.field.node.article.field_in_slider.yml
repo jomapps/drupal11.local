@@ -1,0 +1,21 @@
+uuid: c8bc2dc2-fb9d-45ba-b149-6f3dfeffb1b8
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_in_slider
+    - node.type.article
+id: node.article.field_in_slider
+field_name: field_in_slider
+entity_type: node
+bundle: article
+label: 'Im Slider auf Rubrikenseite anzeigen'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

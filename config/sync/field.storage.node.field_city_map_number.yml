@@ -1,0 +1,21 @@
+uuid: 1c5a9b23-0350-438e-b1a8-bcec96b51451
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_city_map_number
+field_name: field_city_map_number
+entity_type: node
+type: string
+settings:
+  max_length: 10
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

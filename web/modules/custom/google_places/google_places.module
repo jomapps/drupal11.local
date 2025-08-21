@@ -2,35 +2,396 @@
 
 /**
  * @file
- * Google Places module functionality.
+ * Google Places module for integrating with Google Places API.
+ * 
+ * Provides functionality to fetch place data and images from Google Places API
+ * with German language support.
  */
 
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_form_node_form_alter().
+ * 
+ * Adds Google Places functionality to place content type forms.
  */
-function google_places_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+function google_places_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $node = $form_state->getFormObject()->getEntity();
-
-  // Only process place nodes or forms with field_place_id.
-  if ((!$node->isNew() && $node->getEntityTypeId() !== 'node') || 
-      ($node->getEntityTypeId() === 'node' && $node->bundle() !== 'place' && !isset($form['field_place_id']))) {
+  
+  // Only apply to place content type
+  if ($node->getType() !== 'place') {
     return;
   }
-
-  // Attach Google Places functionality.
-  $form['#attached']['library'][] = 'google_places/places';
-  $form['#attached']['drupalSettings']['places'] = [
-    'url' => [
-      'details' => '/google-places/detail',
-      'autocomplete' => '/google-places/autocomplete',
+  
+  // Add Google Places functionality (positioned between Grundinfos and Place Details)
+  $form['google_places'] = [
+    '#type' => 'details',
+    '#title' => t('Google Places'),
+    '#open' => TRUE,
+    '#weight' => 1.5, // Position between Grundinfos (weight 1) and Place Details (weight 2)
+  ];
+  
+  $form['google_places']['get_details_button'] = [
+    '#type' => 'button',
+    '#value' => t('Get Details'),
+    '#ajax' => [
+      'callback' => 'google_places_get_details_ajax',
+      'wrapper' => 'google-places-result',
     ],
-    'input' => '#edit-field-place-id-0-value',
+    '#attributes' => [
+      'class' => ['google-places-get-details'],
+    ],
   ];
 
-  // Add placeholder to Place ID field.
-  if (isset($form['field_place_id']['widget'][0]['value'])) {
-    $form['field_place_id']['widget'][0]['value']['#placeholder'] = t('Search for a place...');
+  // Only show "Get image from Google" button for saved nodes without images
+  $show_image_button = FALSE;
+  if (!$node->isNew() && $node->hasField('field_teaser_media')) {
+    $media_field = $node->get('field_teaser_media');
+    $show_image_button = $media_field->isEmpty(); // Show only if no image attached
   }
+  
+  if ($show_image_button) {
+    $form['google_places']['get_image_button'] = [
+      '#type' => 'button',
+      '#value' => t('Get image from Google'),
+      '#ajax' => [
+        'callback' => 'google_places_get_image_ajax',
+        'wrapper' => 'google-places-result',
+      ],
+      '#attributes' => [
+        'class' => ['google-places-get-image'],
+      ],
+    ];
+  }
+  
+  $form['google_places']['result'] = [
+    '#type' => 'markup',
+    '#markup' => '<div id="google-places-result"></div>',
+  ];
+  
+  // Attach our JavaScript and CSS
+  $form['#attached']['library'][] = 'google_places/google_places';
+}
+
+/**
+ * AJAX callback for getting Google Places details.
+ */
+function google_places_get_details_ajax(array &$form, FormStateInterface $form_state) {
+  $response = new \Drupal\Core\Ajax\AjaxResponse();
+  
+  try {
+    $node = $form_state->getFormObject()->getEntity();
+    $google_places_service = \Drupal::service('google_places.api_service');
+    
+    // Get place details and populate form
+    $result = $google_places_service->populatePlaceData($node, $form, $form_state);
+    
+    if ($result['success']) {
+      $message = t('Place details retrieved and populated successfully.');
+      
+      // Add any entity reference messages
+      $all_messages = [$message];
+      if (!empty($result['messages'])) {
+        foreach ($result['messages'] as $entity_message) {
+          $all_messages[] = $entity_message;
+        }
+      }
+      
+      // Create message HTML with appropriate classes
+      $message_html = '';
+      $message_html .= '<div class="messages messages--status">' . array_shift($all_messages) . '</div>';
+      
+      // Add warning messages for entity reference issues
+      foreach ($all_messages as $warning_message) {
+        $message_html .= '<div class="messages messages--warning">' . $warning_message . '</div>';
+      }
+      
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', $message_html));
+      
+      // Update form state with the populated data BEFORE visual update
+      foreach ($result['populated_fields'] as $field_name => $value) {
+        // Update form state first - handle different field patterns
+        if ($field_name === 'title[0][value]') {
+          $form_state->setValue('title', [['value' => $value]]);
+          \Drupal::logger('google_places')->debug('Set form state title: @value', ['@value' => $value]);
+        } elseif (preg_match('/^([^[]+)\[0\]\[value\]$/', $field_name, $matches)) {
+          // Standard value fields like field_phone[0][value]
+          $field = $matches[1];
+          $form_state->setValue($field, [['value' => $value]]);
+          \Drupal::logger('google_places')->debug('Set form state @field: @value', ['@field' => $field, '@value' => $value]);
+        } else {
+          // For all other complex field patterns, we'll handle them during the manual node setting
+          \Drupal::logger('google_places')->debug('Skipping form state for complex field pattern: @field_name', ['@field_name' => $field_name]);
+        }
+        
+        // Then update visual field
+        $field_selector = '[name="' . $field_name . '"]';
+        $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand($field_selector, 'val', [$value]));
+      }
+      
+      // Note: We'll capture the Place ID and other JavaScript-set values during the save process
+      
+      // Rebuild the entity from updated form state to ensure all fields are captured
+      $form_state->getFormObject()->buildEntity($form, $form_state);
+      
+      // Note: setRebuild(TRUE) can interfere with AJAX context, so we handle title manually if needed
+      
+      // Auto-save the node after populating fields
+      if ($node->isNew()) {
+        try {
+          // Debug: Check ALL form state values to see what's available
+          $all_values = $form_state->getValues();
+          \Drupal::logger('google_places')->debug('ALL form state values: @values', [
+            '@values' => print_r($all_values, TRUE),
+          ]);
+          
+          // Debug: Check form state title value before buildEntity
+          $title_in_state = $form_state->getValue('title');
+          \Drupal::logger('google_places')->debug('Form state title before buildEntity: @title', [
+            '@title' => print_r($title_in_state, TRUE),
+          ]);
+          
+          // Build the entity with updated form state
+          $form_state->getFormObject()->buildEntity($form, $form_state);
+          $node = $form_state->getFormObject()->getEntity();
+          
+          // Debug: Check node title after buildEntity
+          $node_title = $node->getTitle();
+          \Drupal::logger('google_places')->debug('Node title after buildEntity: @title', [
+            '@title' => $node_title ?? 'NULL',
+          ]);
+          
+          // If buildEntity didn't set the title, set it manually
+          if (empty($node_title) && !empty($title_in_state[0]['value'])) {
+            $node->setTitle($title_in_state[0]['value']);
+            \Drupal::logger('google_places')->debug('Manually set node title: @title', [
+              '@title' => $title_in_state[0]['value'],
+            ]);
+          }
+          
+          // Manually set ALL populated fields on the node to ensure they're saved
+          // Group fields by field name to handle complex structures
+          $field_data = [];
+          foreach ($result['populated_fields'] as $field_name => $value) {
+            if (preg_match('/^([^[]+)\[0\]\[([^\]]+)\]$/', $field_name, $matches)) {
+              $field = $matches[1];
+              $component = $matches[2];
+              if ($field !== 'title' && $node->hasField($field)) {
+                if (!isset($field_data[$field])) {
+                  $field_data[$field] = [];
+                }
+                $field_data[$field][$component] = $value;
+              }
+            } elseif (preg_match('/^field_address\[0\]\[address\]\[([^\]]+)\]$/', $field_name, $matches)) {
+              $component = $matches[1];
+              if (!isset($field_data['field_address'])) {
+                $field_data['field_address'] = ['address' => []];
+              }
+              $field_data['field_address']['address'][$component] = $value;
+            }
+          }
+          
+          // Now set all the grouped field data
+          foreach ($field_data as $field => $data) {
+            \Drupal::logger('google_places')->debug('Processing field @field with data: @data', [
+              '@field' => $field,
+              '@data' => print_r($data, TRUE)
+            ]);
+            
+            if ($node->hasField($field)) {
+              if ($field === 'field_address') {
+                // Handle address field specially - ensure country is set first
+                $address_value = [];
+                
+                // Set country first if available
+                if (isset($data['address']['country_code'])) {
+                  $address_value['country_code'] = $data['address']['country_code'];
+                }
+                
+                // Add other components
+                foreach (['organization', 'address_line1', 'address_line2', 'address_line3', 'locality', 'postal_code'] as $component) {
+                  if (isset($data['address'][$component])) {
+                    $address_value[$component] = $data['address'][$component];
+                  }
+                }
+                
+                $node->set($field, [['address' => $address_value]]);
+                \Drupal::logger('google_places')->debug('Set address field with country first: @data', [
+                  '@data' => print_r($address_value, TRUE)
+                ]);
+              } elseif (isset($data['target_id'])) {
+                \Drupal::logger('google_places')->debug('Entity reference field detected: @field', ['@field' => $field]);
+                // Handle entity reference fields - extract numeric ID from display value
+                $target_id = $data['target_id'];
+                if (preg_match('/\((\d+)\)$/', $target_id, $matches)) {
+                  // Extract numeric ID from "Name (123)" format
+                  $numeric_id = $matches[1];
+                  $node->set($field, [['target_id' => $numeric_id]]);
+                  \Drupal::logger('google_places')->debug('Set entity reference @field: extracted ID @id from @display', [
+                    '@field' => $field,
+                    '@id' => $numeric_id,
+                    '@display' => $target_id
+                  ]);
+                } else {
+                  // Fallback - use as is if it's already numeric
+                  $node->set($field, [['target_id' => $target_id]]);
+                  \Drupal::logger('google_places')->debug('Set entity reference @field: @id (no extraction needed)', [
+                    '@field' => $field,
+                    '@id' => $target_id
+                  ]);
+                }
+              } else {
+                // Handle other fields (links, etc.)
+                \Drupal::logger('google_places')->debug('Other field type: @field', ['@field' => $field]);
+                $node->set($field, [$data]);
+                \Drupal::logger('google_places')->debug('Set @field: @data', [
+                  '@field' => $field,
+                  '@data' => print_r($data, TRUE)
+                ]);
+              }
+            }
+          }
+          
+          // Also capture key fields that might have been set by JavaScript (like Place ID)
+          // Check both form state and user input values
+          $important_fields = ['field_place_id', 'field_latitude', 'field_longitude'];
+          foreach ($important_fields as $field_name) {
+            if ($node->hasField($field_name)) {
+              // First try form state
+              $form_value = $form_state->getValue($field_name);
+              $value_to_set = null;
+              
+              if (!empty($form_value[0]['value'])) {
+                $value_to_set = $form_value[0]['value'];
+                \Drupal::logger('google_places')->debug('Captured @field from form state: @value', [
+                  '@field' => $field_name,
+                  '@value' => $value_to_set
+                ]);
+              } else {
+                // Try to get from user input (for JavaScript-set values)
+                $input = $form_state->getUserInput();
+                if (!empty($input[$field_name][0]['value'])) {
+                  $value_to_set = $input[$field_name][0]['value'];
+                  \Drupal::logger('google_places')->debug('Captured @field from user input: @value', [
+                    '@field' => $field_name,
+                    '@value' => $value_to_set
+                  ]);
+                }
+              }
+              
+              if ($value_to_set) {
+                $node->set($field_name, $value_to_set);
+              }
+            }
+          }
+          
+          // Save the node
+          $node->save();
+          
+          \Drupal::logger('google_places')->info('Auto-saved new node @node_id after Get Details', [
+            '@node_id' => $node->id(),
+          ]);
+          
+          // Add success message about auto-save
+          $save_message = t('Node automatically saved with ID: @node_id', ['@node_id' => $node->id()]);
+          $message_html .= '<div class="messages messages--status">' . $save_message . '<br><strong>Reloading page to show image button...</strong></div>';
+          
+          // Update the response with the new message
+          $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', $message_html));
+          
+          // Redirect to the edit form of the saved node so the image button appears
+          $edit_url = \Drupal\Core\Url::fromRoute('entity.node.edit_form', ['node' => $node->id()])->toString();
+          $response->addCommand(new \Drupal\Core\Ajax\RedirectCommand($edit_url));
+          
+        } catch (\Exception $e) {
+          \Drupal::logger('google_places')->error('Failed to auto-save node: @error', [
+            '@error' => $e->getMessage(),
+          ]);
+          $error_message = t('Fields populated but failed to auto-save: @error', ['@error' => $e->getMessage()]);
+          $message_html .= '<div class="messages messages--error">' . $error_message . '</div>';
+          $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', $message_html));
+        }
+      } else {
+        // For existing nodes, just save the updated data
+        try {
+          $form_state->getFormObject()->buildEntity($form, $form_state);
+          $node = $form_state->getFormObject()->getEntity();
+          $node->save();
+          
+          \Drupal::logger('google_places')->info('Updated existing node @node_id after Get Details', [
+            '@node_id' => $node->id(),
+          ]);
+          
+          $save_message = t('Node @node_id updated successfully', ['@node_id' => $node->id()]);
+          $message_html .= '<div class="messages messages--status">' . $save_message . '</div>';
+          $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', $message_html));
+          
+        } catch (\Exception $e) {
+          \Drupal::logger('google_places')->error('Failed to update existing node: @error', [
+            '@error' => $e->getMessage(),
+          ]);
+        }
+      }
+    } else {
+      $message = t('Failed to retrieve place details: @error', ['@error' => $result['error']]);
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+        '<div class="messages messages--error">' . $message . '</div>'));
+    }
+  } catch (\Exception $e) {
+    $message = t('An error occurred: @error', ['@error' => $e->getMessage()]);
+    $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+      '<div class="messages messages--error">' . $message . '</div>'));
+  }
+  
+  return $response;
+}
+
+/**
+ * AJAX callback for getting Google Places image.
+ */
+function google_places_get_image_ajax(array &$form, FormStateInterface $form_state) {
+  $response = new \Drupal\Core\Ajax\AjaxResponse();
+  
+  // Debug: Log that the AJAX callback was called
+  \Drupal::logger('google_places')->info('Image AJAX callback called');
+  
+  // Get the current node (button only appears for saved nodes)
+  $node = $form_state->getFormObject()->getEntity();
+  
+  // Debug: Log the node ID
+  \Drupal::logger('google_places')->info('Node ID: @node_id', ['@node_id' => $node->id() ?? 'NEW']);
+  
+  try {
+    // This button only appears for saved nodes, so we can directly proceed
+    // Get Google Places service
+    $google_places_service = \Drupal::service('google_places.api_service');
+    
+    // Attempt to fetch image for this saved place
+    $result = $google_places_service->fetchPlaceImage($node);
+    
+    if ($result['success']) {
+      $message = t('Image successfully downloaded and attached! Media ID: @media_id', [
+        '@media_id' => $result['media_id'],
+      ]);
+      
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+        '<div class="messages messages--status">' . $message . '<br><strong>Please reload the page to see the attached image.</strong></div>'));
+      
+    } else {
+      $message = t('Failed to download image: @error', ['@error' => $result['error']]);
+      $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+        '<div class="messages messages--error">' . $message . '</div>'));
+    }
+  } catch (\Exception $e) {
+    $message = t('Error: @error', ['@error' => $e->getMessage()]);
+    $response->addCommand(new \Drupal\Core\Ajax\HtmlCommand('#google-places-result', 
+      '<div class="messages messages--error">' . $message . '</div>'));
+      
+    // Log the error
+    \Drupal::logger('google_places')->error('Error fetching Google Places image: @error', [
+      '@error' => $e->getMessage(),
+    ]);
+  }
+  
+  return $response;
 }

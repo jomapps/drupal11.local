@@ -1,0 +1,14 @@
+uuid: 90c16862-8129-415a-843c-261465d0d2ef
+langcode: de
+status: true
+dependencies:
+  config:
+    - user.role.readonlyuser
+  module:
+    - user
+id: user_add_role_action.readonlyuser
+label: 'Add the ReadOnlyUser role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: readonlyuser

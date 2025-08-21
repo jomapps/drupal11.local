@@ -1,0 +1,14 @@
+uuid: c16ce4be-8410-4250-a0f4-55d6f97bad6f
+langcode: de
+status: true
+dependencies:
+  config:
+    - user.role.readonlyuser
+  module:
+    - user
+id: user_remove_role_action.readonlyuser
+label: 'Remove the ReadOnlyUser role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: readonlyuser

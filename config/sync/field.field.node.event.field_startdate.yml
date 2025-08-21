@@ -1,0 +1,21 @@
+uuid: 912bbdf7-2162-405c-8435-166da2aa6960
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_startdate
+    - node.type.event
+  module:
+    - datetime
+id: node.event.field_startdate
+field_name: field_startdate
+entity_type: node
+bundle: event
+label: Startdatum
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

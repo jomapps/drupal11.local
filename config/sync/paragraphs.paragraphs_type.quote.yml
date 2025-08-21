@@ -1,0 +1,12 @@
+uuid: 9126b6b8-bd54-4879-bcae-28af89daf767
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 5L8Sa660vaVs8-pWu6uPlp60E1dTUjRxjvIPcjobQtA
+id: quote
+label: Quote
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

@@ -1,0 +1,29 @@
+uuid: 797efd52-73f9-4b33-90b1-62df9e7fe02b
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subchannel
+    - node.type.article
+    - taxonomy.vocabulary.hauptrubrik
+id: node.article.field_subchannel
+field_name: field_subchannel
+entity_type: node
+bundle: article
+label: Unterrubrik
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      hauptrubrik: hauptrubrik
+    sort:
+      field: name
+      direction: asc
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

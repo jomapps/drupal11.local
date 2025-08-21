@@ -1,0 +1,31 @@
+uuid: d37533aa-fa6f-446e-87c7-83564d9eb939
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.link.field_link
+    - paragraphs.paragraphs_type.link
+  module:
+    - link
+_core:
+  default_config_hash: 6jj5BgJGsSlxrN0gPo-YHX9QRgt2zY_jVlHCfDC_z9o
+id: paragraph.link.default
+targetEntityType: paragraph
+bundle: link
+mode: default
+content:
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  uid: true

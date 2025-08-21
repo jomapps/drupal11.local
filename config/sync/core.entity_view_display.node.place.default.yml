@@ -1,0 +1,115 @@
+uuid: 812f36a4-28a4-4304-81ab-645970041b31
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.place.body
+    - field.field.node.place.field_abo_period
+    - field.field.node.place.field_address
+    - field.field.node.place.field_city_map_number
+    - field.field.node.place.field_company
+    - field.field.node.place.field_consultant
+    - field.field.node.place.field_customer_id
+    - field.field.node.place.field_formatted_address
+    - field.field.node.place.field_google_map_url
+    - field.field.node.place.field_is_hidden
+    - field.field.node.place.field_latitude
+    - field.field.node.place.field_logo
+    - field.field.node.place.field_longitude
+    - field.field.node.place.field_opening_hours
+    - field.field.node.place.field_phone
+    - field.field.node.place.field_place_id
+    - field.field.node.place.field_place_type
+    - field.field.node.place.field_pricemodel
+    - field.field.node.place.field_region
+    - field.field.node.place.field_teaser_media
+    - field.field.node.place.field_url
+    - node.type.place
+  module:
+    - address
+    - datetime_range
+    - user
+id: node.place.default
+targetEntityType: node
+bundle: place
+mode: default
+content:
+  field_abo_period:
+    type: daterange_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+      from_to: both
+      separator: '-'
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_address:
+    type: address_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  field_formatted_address:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_latitude:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 105
+    region: content
+  field_longitude:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 106
+    region: content
+  field_opening_hours:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 108
+    region: content
+  field_phone:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 107
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  body: true
+  field_city_map_number: true
+  field_company: true
+  field_consultant: true
+  field_customer_id: true
+  field_google_map_url: true
+  field_is_hidden: true
+  field_logo: true
+  field_place_id: true
+  field_place_type: true
+  field_pricemodel: true
+  field_region: true
+  field_teaser_media: true
+  field_url: true
+  langcode: true
+  vgwort_counter_id: true

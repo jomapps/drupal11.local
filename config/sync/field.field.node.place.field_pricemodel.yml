@@ -1,0 +1,21 @@
+uuid: d296af1a-6591-4073-906c-523740391f14
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_pricemodel
+    - node.type.place
+  module:
+    - options
+id: node.place.field_pricemodel
+field_name: field_pricemodel
+entity_type: node
+bundle: place
+label: Preismodell
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -1,0 +1,19 @@
+uuid: 3e8450e2-2200-4683-b322-5c3f902d3c31
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_city_map_number
+    - node.type.place
+id: node.place.field_city_map_number
+field_name: field_city_map_number
+entity_type: node
+bundle: place
+label: 'Nummer für Stadtplan'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

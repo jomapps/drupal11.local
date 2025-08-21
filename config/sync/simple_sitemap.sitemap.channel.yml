@@ -1,0 +1,13 @@
+uuid: 5a60932e-89b3-4007-ac3f-c96ea0743f9a
+langcode: en
+status: true
+dependencies:
+  config:
+    - simple_sitemap.type.default_hreflang
+_core:
+  default_config_hash: uo73nVNCDcKBwaTpnvUKcpI4lAhKvsCN8qWueRSKkno
+id: channel
+label: Channel
+description: ''
+type: default_hreflang
+weight: -8

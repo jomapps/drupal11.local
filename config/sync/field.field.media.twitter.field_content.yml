@@ -1,0 +1,21 @@
+uuid: cb904e75-fe32-4177-8435-58af859fea95
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_content
+    - media.type.twitter
+_core:
+  default_config_hash: 9zdWE-p3RwDSvaaC4ak6jJBZhoha0v-2QX2YYILXXio
+id: media.twitter.field_content
+field_name: field_content
+entity_type: media
+bundle: twitter
+label: Content
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

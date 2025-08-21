@@ -1,0 +1,24 @@
+uuid: 647198bb-5303-4e6d-b776-880ecc2681bd
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_teaser_media
+    - media.type.image
+    - node.type.place
+id: node.place.field_teaser_media
+field_name: field_teaser_media
+entity_type: node
+bundle: place
+label: Vorschaubild
+description: 'Teaser/thumbnail image for this place'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

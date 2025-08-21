@@ -1,0 +1,18 @@
+uuid: 882f3916-e8c7-4371-9ce4-fcc112c99a51
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_in_slider_frontpage
+field_name: field_in_slider_frontpage
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,24 @@
+uuid: 0a7e239d-adf5-45af-884b-2f83c239cfd8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_description
+    - media.type.image
+  module:
+    - text
+_core:
+  default_config_hash: geOfwNNc9Drno34j3WN68rM3k5hP5MPAChhlrJ0S8To
+id: media.image.field_description
+field_name: field_description
+entity_type: media
+bundle: image
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

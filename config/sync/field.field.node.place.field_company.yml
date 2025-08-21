@@ -1,0 +1,19 @@
+uuid: 71f677dc-8b3b-4dfe-bc6b-6741da5c2046
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_company
+    - node.type.place
+id: node.place.field_company
+field_name: field_company
+entity_type: node
+bundle: place
+label: Unternehmen
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

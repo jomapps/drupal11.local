@@ -1,0 +1,9 @@
+uuid: 4103e93a-2e45-4235-b71c-bff12942b5d4
+langcode: de
+status: true
+dependencies: {  }
+id: readonlyuser
+label: ReadOnlyUser
+weight: 1
+is_admin: false
+permissions: {  }

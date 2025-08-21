@@ -1,0 +1,27 @@
+uuid: cab4d5c6-f1dd-4130-90c6-063310ecb92f
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_event_type
+    - node.type.event
+    - taxonomy.vocabulary.event_types
+id: node.event.field_event_type
+field_name: field_event_type
+entity_type: node
+bundle: event
+label: Veranstaltungstyp
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      event_types: event_types
+    sort:
+      field: name
+      direction: asc
+field_type: entity_reference

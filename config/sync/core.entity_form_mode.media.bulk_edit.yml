@@ -1,0 +1,13 @@
+uuid: 1f38b8aa-07f8-4549-af48-b940c8e9d31f
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+_core:
+  default_config_hash: a8uS9NDak8llJIUaBr4uZzTvKlYrSXXNyeVE7IXP1Xk
+id: media.bulk_edit
+label: 'Bulk Edit'
+description: ''
+targetEntityType: media
+cache: true

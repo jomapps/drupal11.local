@@ -1,0 +1,31 @@
+uuid: ceb50a6a-8e05-49aa-a9a9-827c0538d1db
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.event_types.field_slug
+    - taxonomy.vocabulary.event_types
+  module:
+    - text
+id: taxonomy_term.event_types.default
+targetEntityType: taxonomy_term
+bundle: event_types
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_slug:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  langcode: true

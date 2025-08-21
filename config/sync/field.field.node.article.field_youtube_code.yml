@@ -1,0 +1,19 @@
+uuid: 7b24d9d5-17f2-4d97-a5a7-e074de3e61b9
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_youtube_code
+    - node.type.article
+id: node.article.field_youtube_code
+field_name: field_youtube_code
+entity_type: node
+bundle: article
+label: 'Youtube Code'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

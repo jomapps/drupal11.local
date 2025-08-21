@@ -1,0 +1,360 @@
+uuid: b03ca1b1-3a39-408e-bdd8-3e290308d5a4
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.basic_html
+    - filter.format.full_html
+    - filter.format.restricted_html
+    - media.type.gallery
+    - media.type.image
+    - media.type.instagram
+    - media.type.pinterest
+    - media.type.remote_video
+    - media.type.twitter
+    - media.type.video
+    - node.type.article
+    - node.type.event
+    - node.type.page
+    - node.type.place
+    - taxonomy.vocabulary.channel
+    - taxonomy.vocabulary.event_types
+    - taxonomy.vocabulary.hauptrubrik
+    - taxonomy.vocabulary.place_types
+    - taxonomy.vocabulary.region
+    - taxonomy.vocabulary.tags
+    - workflows.workflow.editorial
+  module:
+    - access_unpublished
+    - advancedqueue
+    - block
+    - checklistapi
+    - config
+    - content_lock
+    - content_moderation
+    - content_translation
+    - contextual
+    - crop
+    - dropzonejs
+    - entity_reference_revisions
+    - field_ui
+    - file
+    - filter
+    - image
+    - language
+    - linkit
+    - media
+    - media_file_delete
+    - metatag
+    - node
+    - paragraphs
+    - path
+    - pathauto
+    - redirect
+    - responsive_image
+    - scheduler
+    - simple_sitemap
+    - system
+    - taxonomy
+    - thunder_taxonomy
+    - toolbar
+    - update
+    - vgwort
+    - views_bulk_edit
+    - views_ui
+    - workflows
+_core:
+  default_config_hash: ANK_r92megFFSCIC0xc_iLF2VSrt9x0U-ZB4d95GbwY
+id: authenticated
+label: 'Authenticated user'
+weight: -9
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access content'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access media overview'
+  - 'access site in maintenance mode'
+  - 'access site reports'
+  - 'access taxonomy overview'
+  - 'access tokens overview'
+  - 'access toolbar'
+  - 'access user profiles'
+  - 'access_unpublished media gallery'
+  - 'access_unpublished media image'
+  - 'access_unpublished media instagram'
+  - 'access_unpublished media pinterest'
+  - 'access_unpublished media remote_video'
+  - 'access_unpublished media twitter'
+  - 'access_unpublished media video'
+  - 'access_unpublished menu_link_content'
+  - 'access_unpublished node article'
+  - 'access_unpublished node event'
+  - 'access_unpublished node page'
+  - 'access_unpublished node place'
+  - 'access_unpublished taxonomy_term channel'
+  - 'access_unpublished taxonomy_term event_types'
+  - 'access_unpublished taxonomy_term hauptrubrik'
+  - 'access_unpublished taxonomy_term place_types'
+  - 'access_unpublished taxonomy_term region'
+  - 'access_unpublished taxonomy_term tags'
+  - 'administer account settings'
+  - 'administer actions'
+  - 'administer advancedqueue'
+  - 'administer blocks'
+  - 'administer content lock'
+  - 'administer content translation'
+  - 'administer content types'
+  - 'administer crop'
+  - 'administer crop types'
+  - 'administer display modes'
+  - 'administer filters'
+  - 'administer image styles'
+  - 'administer languages'
+  - 'administer linkit profiles'
+  - 'administer media'
+  - 'administer media display'
+  - 'administer media fields'
+  - 'administer media file delete'
+  - 'administer media form display'
+  - 'administer media types'
+  - 'administer menu'
+  - 'administer meta tags'
+  - 'administer modules'
+  - 'administer node display'
+  - 'administer node fields'
+  - 'administer node form display'
+  - 'administer nodes'
+  - 'administer paragraph display'
+  - 'administer paragraph fields'
+  - 'administer paragraph form display'
+  - 'administer paragraphs settings'
+  - 'administer paragraphs types'
+  - 'administer pathauto'
+  - 'administer permissions'
+  - 'administer redirect settings'
+  - 'administer redirects'
+  - 'administer responsive images'
+  - 'administer scheduler'
+  - 'administer site configuration'
+  - 'administer sitemap settings'
+  - 'administer software updates'
+  - 'administer taxonomy'
+  - 'administer taxonomy_term display'
+  - 'administer taxonomy_term fields'
+  - 'administer taxonomy_term form display'
+  - 'administer themes'
+  - 'administer url aliases'
+  - 'administer user display'
+  - 'administer user fields'
+  - 'administer user form display'
+  - 'administer users'
+  - 'administer views'
+  - 'administer workflows'
+  - 'break content lock'
+  - 'bulk delete aliases'
+  - 'bulk update aliases'
+  - 'bypass node access'
+  - 'cancel account'
+  - 'change own username'
+  - 'create article content'
+  - 'create content translations'
+  - 'create event content'
+  - 'create gallery media'
+  - 'create image media'
+  - 'create instagram media'
+  - 'create media'
+  - 'create page content'
+  - 'create pinterest media'
+  - 'create place content'
+  - 'create remote_video media'
+  - 'create terms in channel'
+  - 'create terms in event_types'
+  - 'create terms in hauptrubrik'
+  - 'create terms in place_types'
+  - 'create terms in region'
+  - 'create terms in tags'
+  - 'create twitter media'
+  - 'create url aliases'
+  - 'create video media'
+  - 'delete all revisions'
+  - 'delete all taxonomy revisions'
+  - 'delete any article content'
+  - 'delete any event content'
+  - 'delete any file'
+  - 'delete any gallery media'
+  - 'delete any gallery media revisions'
+  - 'delete any image media'
+  - 'delete any image media revisions'
+  - 'delete any instagram media'
+  - 'delete any instagram media revisions'
+  - 'delete any media'
+  - 'delete any page content'
+  - 'delete any pinterest media'
+  - 'delete any pinterest media revisions'
+  - 'delete any place content'
+  - 'delete any remote_video media'
+  - 'delete any remote_video media revisions'
+  - 'delete any twitter media'
+  - 'delete any twitter media revisions'
+  - 'delete any video media'
+  - 'delete any video media revisions'
+  - 'delete article revisions'
+  - 'delete content translations'
+  - 'delete event revisions'
+  - 'delete media'
+  - 'delete orphan revisions'
+  - 'delete own article content'
+  - 'delete own event content'
+  - 'delete own files'
+  - 'delete own gallery media'
+  - 'delete own image media'
+  - 'delete own instagram media'
+  - 'delete own page content'
+  - 'delete own pinterest media'
+  - 'delete own place content'
+  - 'delete own remote_video media'
+  - 'delete own twitter media'
+  - 'delete own video media'
+  - 'delete page revisions'
+  - 'delete place revisions'
+  - 'delete term revisions in channel'
+  - 'delete term revisions in event_types'
+  - 'delete term revisions in hauptrubrik'
+  - 'delete term revisions in place_types'
+  - 'delete term revisions in region'
+  - 'delete term revisions in tags'
+  - 'delete terms in channel'
+  - 'delete terms in event_types'
+  - 'delete terms in hauptrubrik'
+  - 'delete terms in place_types'
+  - 'delete terms in region'
+  - 'delete terms in tags'
+  - 'delete token'
+  - 'dropzone upload files'
+  - 'edit any article content'
+  - 'edit any checklistapi checklist'
+  - 'edit any event content'
+  - 'edit any gallery media'
+  - 'edit any image media'
+  - 'edit any instagram media'
+  - 'edit any page content'
+  - 'edit any pinterest media'
+  - 'edit any place content'
+  - 'edit any remote_video media'
+  - 'edit any twitter media'
+  - 'edit any video media'
+  - 'edit behavior plugin settings'
+  - 'edit entity sitemap settings'
+  - 'edit own article content'
+  - 'edit own event content'
+  - 'edit own gallery media'
+  - 'edit own image media'
+  - 'edit own instagram media'
+  - 'edit own page content'
+  - 'edit own pinterest media'
+  - 'edit own place content'
+  - 'edit own remote_video media'
+  - 'edit own twitter media'
+  - 'edit own video media'
+  - 'edit terms in channel'
+  - 'edit terms in event_types'
+  - 'edit terms in hauptrubrik'
+  - 'edit terms in place_types'
+  - 'edit terms in region'
+  - 'edit terms in tags'
+  - 'edit update_helper_checklist checklistapi checklist'
+  - 'export configuration'
+  - 'import configuration'
+  - 'link to any page'
+  - 'notify of path changes'
+  - 'renew token'
+  - 'revert all revisions'
+  - 'revert all taxonomy revisions'
+  - 'revert any gallery media revisions'
+  - 'revert any image media revisions'
+  - 'revert any instagram media revisions'
+  - 'revert any pinterest media revisions'
+  - 'revert any remote_video media revisions'
+  - 'revert any twitter media revisions'
+  - 'revert any video media revisions'
+  - 'revert article revisions'
+  - 'revert event revisions'
+  - 'revert page revisions'
+  - 'revert place revisions'
+  - 'revert term revisions in channel'
+  - 'revert term revisions in event_types'
+  - 'revert term revisions in hauptrubrik'
+  - 'revert term revisions in place_types'
+  - 'revert term revisions in region'
+  - 'revert term revisions in tags'
+  - 'schedule publishing of media'
+  - 'schedule publishing of nodes'
+  - 'schedule publishing of taxonomy_term'
+  - 'select account cancellation method'
+  - 'synchronize configuration'
+  - 'translate any entity'
+  - 'translate editable entities'
+  - 'update any media'
+  - 'update content translations'
+  - 'update media'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition publish'
+  - 'use editorial transition unpublish'
+  - 'use editorial transition unpublished_draft'
+  - 'use editorial transition unpublished_published'
+  - 'use text format basic_html'
+  - 'use text format full_html'
+  - 'use text format restricted_html'
+  - 'use views bulk edit'
+  - 'view all media revisions'
+  - 'view all revisions'
+  - 'view all taxonomy revisions'
+  - 'view any checklistapi checklist'
+  - 'view any gallery media revisions'
+  - 'view any image media revisions'
+  - 'view any instagram media revisions'
+  - 'view any pinterest media revisions'
+  - 'view any remote_video media revisions'
+  - 'view any twitter media revisions'
+  - 'view any unpublished content'
+  - 'view any video media revisions'
+  - 'view article revisions'
+  - 'view checklistapi checklists report'
+  - 'view event revisions'
+  - 'view latest version'
+  - 'view media'
+  - 'view own unpublished content'
+  - 'view own unpublished media'
+  - 'view page revisions'
+  - 'view place revisions'
+  - 'view published terms in channel'
+  - 'view published terms in event_types'
+  - 'view published terms in hauptrubrik'
+  - 'view published terms in place_types'
+  - 'view published terms in region'
+  - 'view published terms in tags'
+  - 'view scheduled content'
+  - 'view scheduled media'
+  - 'view scheduled taxonomy_term'
+  - 'view term revisions in channel'
+  - 'view term revisions in event_types'
+  - 'view term revisions in hauptrubrik'
+  - 'view term revisions in place_types'
+  - 'view term revisions in region'
+  - 'view term revisions in tags'
+  - 'view the administration theme'
+  - 'view unpublished paragraphs'
+  - 'view unpublished terms in channel'
+  - 'view unpublished terms in event_types'
+  - 'view unpublished terms in hauptrubrik'
+  - 'view unpublished terms in place_types'
+  - 'view unpublished terms in region'
+  - 'view unpublished terms in tags'
+  - 'view update notifications'
+  - 'view update_helper_checklist checklistapi checklist'
+  - 'view user email addresses'
+  - 'view vgwort info'
+  - 'view vocabulary labels'
