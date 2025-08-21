@@ -182,8 +182,12 @@ class GooglePlacesApiService {
         ];
       }
 
-      // Create media entity
-      $place_name = $node->getTitle() ?: 'Google Places Image';
+      // Get place name from the saved node
+      $place_name = $node->getTitle() ?: 'Google Places Image - ' . $place_id;
+      
+      $this->logger->debug('Using place name for media: @name', [
+        '@name' => $place_name,
+      ]);
       $media = Media::create([
         'bundle' => 'image',
         'name' => $place_name . ' - Google Places Image',
@@ -209,6 +213,8 @@ class GooglePlacesApiService {
         $node->set('field_teaser_media', [
           'target_id' => $media->id(),
         ]);
+        
+        // Save the node with the attached media
         $node->save();
         
         $this->logger->info('Successfully attached media @media_id to node @node_id for place @place_id', [
@@ -322,11 +328,17 @@ class GooglePlacesApiService {
           '@value' => $value,
         ]);
         
-        // Check if this looks like a Google Place ID (starts with ChIJ)
-        if ($value && is_string($value) && strpos($value, 'ChIJ') === 0) {
-          $this->logger->info('Found Place ID in specific field @field: @place_id', [
+        // Check if this looks like a Google Place ID (legacy or modern format)
+        if ($value && is_string($value) && (
+          strpos($value, 'ChIJ') === 0 ||  // Legacy Place ID format
+          strpos($value, 'EhE') === 0 ||   // Alternative legacy format
+          strpos($value, 'GhI') === 0 ||   // Alternative legacy format
+          (strlen($value) > 20 && ctype_alnum(str_replace(['_', '-'], '', $value))) // Modern API Place ID (longer alphanumeric)
+        )) {
+          $this->logger->info('Found Place ID in specific field @field: @place_id (length: @length)', [
             '@field' => $field_name,
             '@place_id' => $value,
+            '@length' => strlen($value),
           ]);
           return $value;
         }
@@ -384,27 +396,78 @@ class GooglePlacesApiService {
    *   Result array with success status and data/error.
    */
   protected function getPlaceDetails($place_id) {
-    $url = 'https://maps.googleapis.com/maps/api/place/details/json';
+    // Use modern Place Details (New) API
+    $url = 'https://places.googleapis.com/v1/places/' . $place_id;
     
-    $params = [
-      'place_id' => $place_id,
-      'fields' => 'name,formatted_address,photos,opening_hours',
-      'language' => 'de', // German language
-      'key' => $this->apiKey,
+    $headers = [
+      'Content-Type' => 'application/json',
+      'X-Goog-Api-Key' => $this->apiKey,
+      'X-Goog-FieldMask' => 'id,displayName,formattedAddress,photos,regularOpeningHours,addressComponents'
     ];
 
     try {
-      $response = $this->httpClient->get($url, ['query' => $params]);
+      $response = $this->httpClient->get($url, ['headers' => $headers]);
       $data = json_decode($response->getBody()->getContents(), TRUE);
 
-      if ($data['status'] === 'OK') {
+      if (isset($data['id'])) {
+        // Convert new API format to legacy format for compatibility
+        $legacy_data = [
+          'place_id' => $data['id'],
+          'name' => $data['displayName']['text'] ?? '',
+          'formatted_address' => $data['formattedAddress'] ?? '',
+          'photos' => [],
+          'opening_hours' => [],
+          'address_components' => []
+        ];
+        
+        // Convert photos format from modern API to legacy format
+        if (isset($data['photos']) && is_array($data['photos'])) {
+          foreach ($data['photos'] as $photo) {
+            if (isset($photo['name'])) {
+              // Extract the photo reference from the name field
+              // Format: "places/PLACE_ID/photos/PHOTO_REFERENCE"
+              $parts = explode('/photos/', $photo['name']);
+              if (count($parts) === 2) {
+                $legacy_data['photos'][] = [
+                  'photo_reference' => $parts[1], // Extract the actual photo reference
+                  'height' => $photo['heightPx'] ?? 400,
+                  'width' => $photo['widthPx'] ?? 400,
+                ];
+              }
+            }
+          }
+        }
+        
+        // Convert opening hours format
+        if (isset($data['regularOpeningHours']['weekdayDescriptions'])) {
+          $legacy_data['opening_hours']['weekday_text'] = $data['regularOpeningHours']['weekdayDescriptions'];
+        }
+        
+        // Convert address components format from modern API to legacy format
+        if (isset($data['addressComponents']) && is_array($data['addressComponents'])) {
+          foreach ($data['addressComponents'] as $component) {
+            $legacy_component = [
+              'long_name' => $component['longText'] ?? '',
+              'short_name' => $component['shortText'] ?? '',
+              'types' => $component['types'] ?? []
+            ];
+            $legacy_data['address_components'][] = $legacy_component;
+          }
+          
+          $this->logger->debug('Converted @count address components from modern API', [
+            '@count' => count($legacy_data['address_components'])
+          ]);
+        }
+        
+        $this->logger->info('Modern Places API successful for place @place_id', ['@place_id' => $place_id]);
+        
         return [
           'success' => TRUE,
-          'data' => $data['result'],
+          'data' => $legacy_data,
         ];
       } else {
-        $error = $data['error_message'] ?? $data['status'];
-        $this->logger->error('Google Places API error: @error', ['@error' => $error]);
+        $error = 'Invalid response format from modern API';
+        $this->logger->error('Modern Places API error: @error', ['@error' => $error]);
         
         return [
           'success' => FALSE,
@@ -412,11 +475,11 @@ class GooglePlacesApiService {
         ];
       }
     } catch (RequestException $e) {
-      $this->logger->error('HTTP request failed: @error', ['@error' => $e->getMessage()]);
+      $this->logger->error('Modern Places API request failed: @error', ['@error' => $e->getMessage()]);
       
       return [
         'success' => FALSE,
-        'error' => 'Failed to connect to Google Places API: ' . $e->getMessage(),
+        'error' => 'Failed to connect to Modern Places API: ' . $e->getMessage(),
       ];
     }
   }
@@ -652,6 +715,16 @@ class GooglePlacesApiService {
 
     // Populate address field
     if ($node->hasField('field_address')) {
+      $this->logger->debug('About to populate address field. Place data keys: @keys', [
+        '@keys' => implode(', ', array_keys($place_data))
+      ]);
+      if (isset($place_data['address_components'])) {
+        $this->logger->debug('Address components found: @components', [
+          '@components' => print_r($place_data['address_components'], TRUE)
+        ]);
+      } else {
+        $this->logger->debug('No address_components found in place data');
+      }
       $this->populateAddressField($place_data, $populated_fields);
     }
 
@@ -691,6 +764,10 @@ class GooglePlacesApiService {
   protected function populateAddressField(array $place_data, array &$populated_fields) {
     // Extract address components from Google Places data
     $address_components = $place_data['address_components'] ?? [];
+    
+    $this->logger->debug('populateAddressField called with @count address components', [
+      '@count' => count($address_components)
+    ]);
     
     // Initialize address parts
     $country_code = null;
@@ -734,16 +811,22 @@ class GooglePlacesApiService {
       $this->logger->debug('Address city mapped: @city', ['@city' => $city]);
     }
     
+    if ($postal_code) {
+      $populated_fields['field_address[0][address][postal_code]'] = $postal_code;
+      $this->logger->debug('Address postal code mapped: @postal_code', ['@postal_code' => $postal_code]);
+    }
+    
     // Use place name as organization if available
     if (!empty($place_data['name'])) {
       $populated_fields['field_address[0][address][organization]'] = $place_data['name'];
       $this->logger->debug('Address organization mapped: @org', ['@org' => $place_data['name']]);
     }
     
-    $this->logger->info('Address field populated - Country: @country, Street: @street, City: @city, Organization: @org', [
+    $this->logger->info('Address field populated - Country: @country, Street: @street, City: @city, Postal: @postal, Organization: @org', [
       '@country' => $country_code ?: 'N/A',
       '@street' => $street_address ?: 'N/A', 
       '@city' => $city ?: 'N/A',
+      '@postal' => $postal_code ?: 'N/A',
       '@org' => $place_data['name'] ?? 'N/A',
     ]);
   }
