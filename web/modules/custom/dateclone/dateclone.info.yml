@@ -1,0 +1,10 @@
+name: Date Clone
+type: module
+description: "Clones event nodes based on additional dates with advanced UI for recurring events"
+package: Custom
+version: 1.0.0
+core_version_requirement: ^11
+dependencies:
+  - node
+  - datetime
+  - field

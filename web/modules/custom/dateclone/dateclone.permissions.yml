@@ -1,0 +1,4 @@
+access dateclone:
+  title: 'Access DateClone functionality'
+  description: 'Allows users to access the DateClone AJAX endpoints and duplicate events'
+  restrict access: false

@@ -1,0 +1,9 @@
+dateclone:
+  version: 1.0.0
+  js:
+    js/dateclone.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupalSettings
+    - core/once

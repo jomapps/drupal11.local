@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Contains dateclone.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\dateclone\Controller\DateCloneController;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_help().
+ */
+function dateclone_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the dateclone module.
+    case 'help.page.dateclone':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The DateClone module allows duplicating event nodes with different dates through an enhanced UI.') . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Event Duplication') . '</dt>';
+      $output .= '<dd>' . t('Create multiple event instances with different dates using weekday shortcuts or manual date entry.') . '</dd>';
+      $output .= '</dl>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function dateclone_node_insert(NodeInterface $node) {
+  if ($node->getType() === 'event' && \Drupal::request()->request->all('dateclone') !== NULL) {
+    $values = \Drupal::request()->request->all('dateclone');
+    
+    // Remove the values from request to prevent infinite loop
+    \Drupal::request()->request->set('dateclone', NULL);
+    
+    $date_controller = \Drupal::service('dateclone.controller');
+    $date_controller->cloneNodes($node->id(), $values);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dateclone_node_update(NodeInterface $node) {
+  if ($node->getType() === 'event' && \Drupal::request()->request->all('dateclone') !== NULL) {
+    $values = \Drupal::request()->request->all('dateclone');
+    
+    // Remove the values from request to prevent infinite loop
+    \Drupal::request()->request->set('dateclone', NULL);
+    
+    $date_controller = \Drupal::service('dateclone.controller');
+    $date_controller->cloneNodes($node->id(), $values);
+  }
+}

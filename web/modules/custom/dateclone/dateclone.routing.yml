@@ -1,0 +1,7 @@
+dateclone.create:
+  path: /dateclone/create
+  defaults:
+    _controller: '\Drupal\dateclone\Controller\DateCloneController::clone'
+  requirements:
+    _permission: "access dateclone"
+    _method: 'POST'

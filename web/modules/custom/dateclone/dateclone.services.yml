@@ -1,0 +1,4 @@
+services:
+  dateclone.controller:
+    class: Drupal\dateclone\Controller\DateCloneController
+    arguments: ['@entity_type.manager']
